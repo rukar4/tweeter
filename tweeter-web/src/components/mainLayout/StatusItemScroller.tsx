@@ -13,7 +13,18 @@ import StatusItem from "../statusItem/StatusItem";
 
 export const PAGE_SIZE = 10;
 
-const StoryScroller = () => {
+interface Props {
+  itemDescription: string,
+  featurePath: string,
+  loadMore: (
+    authToken: AuthToken,
+    userAlias: string,
+    pageSize: number,
+    lastItem: Status | null
+  ) => Promise<[Status[], boolean]>
+}
+
+const StatusItemScroller = (props: Props) => {
   const { displayToast } = useContext(ToastActionsContext);
   const [items, setItems] = useState<Status[]>([]);
   const [hasMoreItems, setHasMoreItems] = useState(true);
@@ -55,7 +66,7 @@ const StoryScroller = () => {
 
   const loadMoreItems = async (lastItem: Status | null) => {
     try {
-      const [newItems, hasMore] = await loadMoreStoryItems(
+      const [newItems, hasMore] = await props.loadMore(
         authToken!,
         displayedUser!.alias,
         PAGE_SIZE,
@@ -68,20 +79,10 @@ const StoryScroller = () => {
     } catch (error) {
       displayToast(
         ToastType.Error,
-        `Failed to load story items because of exception: ${ error }`,
+        `Failed to load ${props.itemDescription} items because of exception: ${error}`,
         0
       );
     }
-  };
-
-  const loadMoreStoryItems = async (
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null
-  ): Promise<[Status[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
   };
 
   const getUser = async (
@@ -96,25 +97,25 @@ const StoryScroller = () => {
     <div className="container px-0 overflow-visible vh-100">
       <InfiniteScroll
         className="pr-0 mr-0"
-        dataLength={ items.length }
-        next={ () => loadMoreItems(lastItem) }
-        hasMore={ hasMoreItems }
-        loader={ <h4>Loading...</h4> }
+        dataLength={items.length}
+        next={() => loadMoreItems(lastItem)}
+        hasMore={hasMoreItems}
+        loader={<h4>Loading...</h4>}
       >
-        { items.map((item, index) => (
+        {items.map((item, index) => (
           <div
-            key={ index }
+            key={index}
             className="row mb-3 mx-0 px-0 border rounded bg-white"
           >
             <StatusItem
               status={ item }
-              featurePath={ "/story" }
+              featurePath={ props.featurePath }
             />
           </div>
-        )) }
+        ))}
       </InfiniteScroll>
     </div>
   );
 };
 
-export default StoryScroller;
+export default StatusItemScroller;
