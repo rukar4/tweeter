@@ -5,6 +5,11 @@
     "tweeter-shared",
     "tweeter-web"
   ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "start": "npm run start --workspace tweeter-web",
+    "dev": "npm run build && npm run start"
+  },
   "author": "JWilkerson",
   "license": "ISC",
   "dependencies": {
