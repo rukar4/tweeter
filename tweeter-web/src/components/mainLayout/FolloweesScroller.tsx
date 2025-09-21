@@ -26,6 +26,14 @@ const FolloweesScroller = () => {
   const { setDisplayedUser } = useContext(UserInfoActionsContext);
   const { displayedUser: displayedUserAliasParam } = useParams();
 
+  const getUser = async (
+    authToken: AuthToken,
+    alias: string
+  ): Promise<User | null> => {
+    // TODO: Replace with the result of calling server
+    return FakeData.instance.findUserByAlias(alias);
+  };
+
   // Update the displayed user context variable whenever the displayedUser url parameter changes. This allows browser forward and back buttons to work correctly.
   useEffect(() => {
     if (
@@ -68,7 +76,7 @@ const FolloweesScroller = () => {
     } catch (error) {
       displayToast(
         ToastType.Error,
-        `Failed to load followees because of exception: ${error}`,
+        `Failed to load followees because of exception: ${ error }`,
         0
       );
     }
@@ -84,31 +92,23 @@ const FolloweesScroller = () => {
     return FakeData.instance.getPageOfUsers(lastFollowee, pageSize, userAlias);
   };
 
-  const getUser = async (
-    authToken: AuthToken,
-    alias: string
-  ): Promise<User | null> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.findUserByAlias(alias);
-  };
-
   return (
     <div className="container px-0 overflow-visible vh-100">
       <InfiniteScroll
         className="pr-0 mr-0"
-        dataLength={items.length}
-        next={() => loadMoreItems(lastItem)}
-        hasMore={hasMoreItems}
-        loader={<h4>Loading...</h4>}
+        dataLength={ items.length }
+        next={ () => loadMoreItems(lastItem) }
+        hasMore={ hasMoreItems }
+        loader={ <h4>Loading...</h4> }
       >
-        {items.map((item, index) => (
+        { items.map((item, index) => (
           <div
-            key={index}
+            key={ index }
             className="row mb-3 mx-0 px-0 border rounded bg-white"
           >
-            <UserItem user={item} featurePath="/followees" />
+            <UserItem user={ item } featurePath="/followees"/>
           </div>
-        ))}
+        )) }
       </InfiniteScroll>
     </div>
   );

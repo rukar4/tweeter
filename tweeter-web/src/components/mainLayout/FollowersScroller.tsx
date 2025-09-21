@@ -76,7 +76,7 @@ const FollowersScroller = () => {
     } catch (error) {
       displayToast(
         ToastType.Error,
-        `Failed to load followers because of exception: ${error}`,
+        `Failed to load followers because of exception: ${ error }`,
         0
       );
     }
@@ -96,19 +96,19 @@ const FollowersScroller = () => {
     <div className="container px-0 overflow-visible vh-100">
       <InfiniteScroll
         className="pr-0 mr-0"
-        dataLength={items.length}
-        next={() => loadMoreItems(lastItem)}
-        hasMore={hasMoreItems}
-        loader={<h4>Loading...</h4>}
+        dataLength={ items.length }
+        next={ () => loadMoreItems(lastItem) }
+        hasMore={ hasMoreItems }
+        loader={ <h4>Loading...</h4> }
       >
-        {items.map((item, index) => (
+        { items.map((item, index) => (
           <div
-            key={index}
+            key={ index }
             className="row mb-3 mx-0 px-0 border rounded bg-white"
           >
-            <UserItem user={item} featurePath="/followers" />
+            <UserItem user={ item } featurePath="/followers"/>
           </div>
-        ))}
+        )) }
       </InfiniteScroll>
     </div>
   );
