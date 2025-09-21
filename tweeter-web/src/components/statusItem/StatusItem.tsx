@@ -7,8 +7,8 @@ import { UserInfoActionsContext, UserInfoContext } from "../userInfo/UserInfoCon
 import { ToastActionsContext } from "../toaster/ToastContexts";
 
 interface Props {
-  status: Status
-  featurePath: string
+  status: Status;
+  featurePath: string;
 }
 
 const StatusItem = (props: Props) => {

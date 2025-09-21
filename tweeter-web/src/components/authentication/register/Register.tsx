@@ -9,6 +9,7 @@ import { AuthToken, FakeData, User } from "tweeter-shared";
 import { ToastActionsContext } from "../../toaster/ToastContexts";
 import { Buffer } from "buffer";
 import { ToastType } from "../../toaster/Toast";
+import AuthenticationFields from "../AuthenticationFields";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -97,11 +98,11 @@ const Register = () => {
       );
 
       updateUserInfo(user, user, authToken, rememberMe);
-      navigate(`/feed/${user.alias}`);
+      navigate(`/feed/${ user.alias }`);
     } catch (error) {
       displayToast(
         ToastType.Error,
-        `Failed to register user because of exception: ${error}`,
+        `Failed to register user because of exception: ${ error }`,
         0
       );
     } finally {
@@ -138,11 +139,11 @@ const Register = () => {
           <input
             type="text"
             className="form-control"
-            size={50}
+            size={ 50 }
             id="firstNameInput"
             placeholder="First Name"
-            onKeyDown={registerOnEnter}
-            onChange={(event) => setFirstName(event.target.value)}
+            onKeyDown={ registerOnEnter }
+            onChange={ (event) => setFirstName(event.target.value) }
           />
           <label htmlFor="firstNameInput">First Name</label>
         </div>
@@ -150,51 +151,35 @@ const Register = () => {
           <input
             type="text"
             className="form-control"
-            size={50}
+            size={ 50 }
             id="lastNameInput"
             placeholder="Last Name"
-            onKeyDown={registerOnEnter}
-            onChange={(event) => setLastName(event.target.value)}
+            onKeyDown={ registerOnEnter }
+            onChange={ (event) => setLastName(event.target.value) }
           />
           <label htmlFor="lastNameInput">Last Name</label>
         </div>
-        <div className="form-floating">
-          <input
-            type="text"
-            className="form-control"
-            size={50}
-            id="aliasInput"
-            placeholder="name@example.com"
-            onKeyDown={registerOnEnter}
-            onChange={(event) => setAlias(event.target.value)}
-          />
-          <label htmlFor="aliasInput">Alias</label>
-        </div>
-        <div className="form-floating">
-          <input
-            type="password"
-            className="form-control"
-            id="passwordInput"
-            placeholder="Password"
-            onKeyDown={registerOnEnter}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-          <label htmlFor="passwordInput">Password</label>
-        </div>
+        <AuthenticationFields
+          onEnter={ registerOnEnter }
+          alias={ alias }
+          password={ password }
+          setAlias={ setAlias }
+          setPassword={ setPassword }
+        />
         <div className="form-floating mb-3">
           <input
             type="file"
             className="d-inline-block py-5 px-4 form-control bottom"
             id="imageFileInput"
-            onKeyDown={registerOnEnter}
-            onChange={handleFileChange}
+            onKeyDown={ registerOnEnter }
+            onChange={ handleFileChange }
           />
-          {imageUrl.length > 0 && (
+          { imageUrl.length > 0 && (
             <>
               <label htmlFor="imageFileInput">User Image</label>
-              <img src={imageUrl} className="img-thumbnail" alt=""></img>
+              <img src={ imageUrl } className="img-thumbnail" alt=""></img>
             </>
-          )}
+          ) }
         </div>
       </>
     );
@@ -213,12 +198,12 @@ const Register = () => {
       headingText="Please Register"
       submitButtonLabel="Register"
       oAuthHeading="Register with:"
-      inputFieldFactory={inputFieldFactory}
-      switchAuthenticationMethodFactory={switchAuthenticationMethodFactory}
-      setRememberMe={setRememberMe}
-      submitButtonDisabled={checkSubmitButtonStatus}
-      isLoading={isLoading}
-      submit={doRegister}
+      inputFieldFactory={ inputFieldFactory }
+      switchAuthenticationMethodFactory={ switchAuthenticationMethodFactory }
+      setRememberMe={ setRememberMe }
+      submitButtonDisabled={ checkSubmitButtonStatus }
+      isLoading={ isLoading }
+      submit={ doRegister }
     />
   );
 };
