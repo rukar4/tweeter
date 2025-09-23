@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useContext } from "react";
+import React, { useContext } from "react";
 import { UserInfoActionsContext, UserInfoContext } from "./UserInfoContexts";
 import { AuthToken, FakeData, User } from "tweeter-shared";
 import { useNavigate } from "react-router-dom";

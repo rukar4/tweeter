@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { AuthToken, FakeData, User } from "tweeter-shared";
 import { useParams } from "react-router-dom";

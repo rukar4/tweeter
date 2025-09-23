@@ -1,18 +1,12 @@
 import "./App.css";
-import {
-  BrowserRouter,
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation, } from "react-router-dom";
 import Login from "./components/authentication/login/Login";
 import Register from "./components/authentication/register/Register";
 import MainLayout from "./components/mainLayout/MainLayout";
 import Toaster from "./components/toaster/Toaster";
 import UserItemScroller from "./components/mainLayout/UserItemScroller";
 import StatusItemScroller from "./components/mainLayout/StatusItemScroller";
-import { AuthToken, User, FakeData, Status } from "tweeter-shared";
+import { AuthToken, FakeData, Status, User } from "tweeter-shared";
 import { useUserInfo } from "./components/userInfo/UserHooks";
 
 const App = () => {

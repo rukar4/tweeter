@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
-import { Toast, ToastType, makeToast } from "./Toast";
+import { makeToast, Toast, ToastType } from "./Toast";
 import PropTypes from "prop-types";
-import { ToastListContext, ToastActionsContext } from "./ToastContexts";
+import { ToastActionsContext, ToastListContext } from "./ToastContexts";
 
 interface Props {
   children: React.ReactNode;
