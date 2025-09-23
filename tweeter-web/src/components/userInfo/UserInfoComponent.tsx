@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthToken, FakeData, User } from "tweeter-shared";
 import { useMessageActions } from "../toaster/MessageHooks";
-import { useUserInfo, useUserInfoActions } from "./UserInfoHooks";
+import { useUserInfo, useUserInfoActions } from "./UserHooks";
 
 const UserInfo = () => {
   const [isFollower, setIsFollower] = useState(false);

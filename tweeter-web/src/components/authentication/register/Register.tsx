@@ -7,7 +7,7 @@ import { AuthToken, FakeData, User } from "tweeter-shared";
 import { Buffer } from "buffer";
 import AuthenticationFields from "../AuthenticationFields";
 import { useMessageActions } from "../../toaster/MessageHooks";
-import { useUserInfoActions } from "../../userInfo/UserInfoHooks";
+import { useUserInfoActions } from "../../userInfo/UserHooks";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");

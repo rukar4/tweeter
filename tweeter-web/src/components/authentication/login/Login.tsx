@@ -6,7 +6,7 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import { AuthToken, FakeData, User } from "tweeter-shared";
 import AuthenticationFields from "../AuthenticationFields";
 import { useMessageActions } from "../../toaster/MessageHooks";
-import { useUserInfoActions } from "../../userInfo/UserInfoHooks";
+import { useUserInfoActions } from "../../userInfo/UserHooks";
 
 interface Props {
   originalUrl?: string;

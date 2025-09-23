@@ -4,7 +4,7 @@ import { AuthToken, FakeData, User } from "tweeter-shared";
 import { useParams } from "react-router-dom";
 import UserItem from "../userItem/UserItem";
 import { useMessageActions } from "../toaster/MessageHooks";
-import { useUserInfo, useUserInfoActions } from "../userInfo/UserInfoHooks";
+import { useUserInfo, useUserInfoActions } from "../userInfo/UserHooks";
 
 export const PAGE_SIZE = 10;
 
