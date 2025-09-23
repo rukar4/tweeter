@@ -6,10 +6,9 @@ import {
 import { AuthToken, FakeData, Status, User } from "tweeter-shared";
 import { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { ToastActionsContext } from "../toaster/ToastContexts";
 import { useParams } from "react-router-dom";
-import { ToastType } from "../toaster/Toast";
 import StatusItem from "../statusItem/StatusItem";
+import { useMessageActions } from "../toaster/MessageHooks";
 
 export const PAGE_SIZE = 10;
 
@@ -25,7 +24,7 @@ interface Props {
 }
 
 const StatusItemScroller = (props: Props) => {
-  const { displayToast } = useContext(ToastActionsContext);
+  const { displayErrorMessage } = useMessageActions();
   const [items, setItems] = useState<Status[]>([]);
   const [hasMoreItems, setHasMoreItems] = useState(true);
   const [lastItem, setLastItem] = useState<Status | null>(null);
@@ -77,10 +76,8 @@ const StatusItemScroller = (props: Props) => {
       setLastItem(() => newItems[newItems.length - 1]);
       addItems(newItems);
     } catch (error) {
-      displayToast(
-        ToastType.Error,
-        `Failed to load ${props.itemDescription} items because of exception: ${error}`,
-        0
+      displayErrorMessage(
+        `Failed to load ${ props.itemDescription } items because of exception: ${ error }`
       );
     }
   };
@@ -97,14 +94,14 @@ const StatusItemScroller = (props: Props) => {
     <div className="container px-0 overflow-visible vh-100">
       <InfiniteScroll
         className="pr-0 mr-0"
-        dataLength={items.length}
-        next={() => loadMoreItems(lastItem)}
-        hasMore={hasMoreItems}
-        loader={<h4>Loading...</h4>}
+        dataLength={ items.length }
+        next={ () => loadMoreItems(lastItem) }
+        hasMore={ hasMoreItems }
+        loader={ <h4>Loading...</h4> }
       >
-        {items.map((item, index) => (
+        { items.map((item, index) => (
           <div
-            key={index}
+            key={ index }
             className="row mb-3 mx-0 px-0 border rounded bg-white"
           >
             <StatusItem
@@ -112,7 +109,7 @@ const StatusItemScroller = (props: Props) => {
               featurePath={ props.featurePath }
             />
           </div>
-        ))}
+        )) }
       </InfiniteScroll>
     </div>
   );
