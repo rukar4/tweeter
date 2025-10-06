@@ -76,6 +76,7 @@ const Login = (props: Props) => {
         password={ password }
         setAlias={ setAlias }
         setPassword={ setPassword }
+        isBottom={ true }
       />
     );
   };

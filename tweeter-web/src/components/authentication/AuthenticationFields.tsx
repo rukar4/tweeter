@@ -6,6 +6,7 @@ interface Props {
   password: string
   setAlias: (alias: string) => void;
   setPassword: (password: string) => void;
+  isBottom?: boolean
 }
 
 const AuthenticationFields = (props: Props) => {
@@ -24,10 +25,10 @@ const AuthenticationFields = (props: Props) => {
         />
         <label htmlFor="aliasInput">Alias</label>
       </div>
-      <div className="form-floating mb-3">
+      <div className={ props.isBottom ? "form-floating mb-3" : "form-floating" }>
         <input
           type="password"
-          className="form-control bottom"
+          className={ props.isBottom ? "form-control bottom" : "form-control" }
           id="passwordInput"
           placeholder="Password"
           value={ props.password }
