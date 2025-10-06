@@ -9,7 +9,7 @@ import { UserItemPresenter, UserItemView } from "../../presenter/UserItemPresent
 
 interface Props {
   featurePath: string,
-  presenterFactory: (listener: UserItemView) => UserItemPresenter
+  presenterFactory: (view: UserItemView) => UserItemPresenter
 }
 
 const UserItemScroller = (props: Props) => {
@@ -21,7 +21,7 @@ const UserItemScroller = (props: Props) => {
   const { setDisplayedUser } = useUserInfoActions();
   const { displayedUser: displayedUserAliasParam } = useParams();
 
-  const listener: UserItemView = {
+  const view: UserItemView = {
     addItems: (newItems: User[]) =>
       setItems((previousItems) => [...previousItems, ...newItems]),
     displayErrorMessage: displayErrorMessage
@@ -29,7 +29,7 @@ const UserItemScroller = (props: Props) => {
 
   const presenterRef = useRef<UserItemPresenter | null>(null)
   if (!presenterRef.current) {
-    presenterRef.current = props.presenterFactory(listener)
+    presenterRef.current = props.presenterFactory(view)
   }
 
   // Update the displayed user context variable whenever the displayedUser url parameter changes. This allows browser forward and back buttons to work correctly.
