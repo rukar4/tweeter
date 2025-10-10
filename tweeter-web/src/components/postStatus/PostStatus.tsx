@@ -1,10 +1,14 @@
 import "./PostStatus.css";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo } from "../userInfo/UserHooks";
 import { PostStatusPresenter, PostStatusView } from "../../presenter/statusPresenters/PostStatusPresenter";
 
-const PostStatus = () => {
+interface Props {
+  presenterFactory: (view: PostStatusView) => PostStatusPresenter
+}
+
+const PostStatus = (props: Props) => {
   const { displayInfoMessage, displayErrorMessage, deleteMessage } = useMessageActions()
 
   const { currentUser, authToken } = useUserInfo()
@@ -18,11 +22,15 @@ const PostStatus = () => {
     deleteMessage: deleteMessage,
     clearPost: () => setPost("")
   }
-  const presenter = new PostStatusPresenter(view)
+
+  const presenterRef = useRef<PostStatusPresenter | null>(null)
+  if (!presenterRef.current) {
+    presenterRef.current = props.presenterFactory(view)
+  }
 
   const submitPost = async (event: React.MouseEvent) => {
     event.preventDefault()
-    await presenter.submitPost(post, currentUser!, authToken!)
+    await presenterRef.current!.submitPost(post, currentUser!, authToken!)
   }
 
   const clearPost = (event: React.MouseEvent) => {

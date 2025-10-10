@@ -3,11 +3,13 @@ import { Outlet } from "react-router-dom";
 import AppNavbar from "../appNavbar/AppNavbar";
 import PostStatus from "../postStatus/PostStatus";
 import UserInfo from "../userInfo/UserInfoComponent";
+import { PostStatusPresenter, PostStatusView } from "../../presenter/statusPresenters/PostStatusPresenter";
+import { LogoutPresenter, AuthView } from "../../presenter/AuthPresenter";
 
 const MainLayout = () => {
   return (
     <>
-      <AppNavbar />
+      <AppNavbar  presenterFactory={ (view: AuthView) => new LogoutPresenter(view) }/>
       <div className="container mx-auto px-3 w-100">
         <div className="row gx-4">
           <div className="col-4">
@@ -16,7 +18,7 @@ const MainLayout = () => {
                 <UserInfo />
               </div>
               <div className="p-3 border mt-1 rounded bg-light">
-                <PostStatus />
+                <PostStatus presenterFactory={ (view: PostStatusView) => new PostStatusPresenter(view)} />
               </div>
             </div>
           </div>
