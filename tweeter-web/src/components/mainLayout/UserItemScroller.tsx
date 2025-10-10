@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import UserItem from "../userItem/UserItem";
 import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo, useUserInfoActions } from "../userInfo/UserHooks";
-import { UserItemPresenter, UserItemView } from "../../presenter/UserItemPresenter";
+import { UserItemPresenter, UserItemView } from "../../presenter/userPresenters/UserItemPresenter";
 
 interface Props {
   featurePath: string,
