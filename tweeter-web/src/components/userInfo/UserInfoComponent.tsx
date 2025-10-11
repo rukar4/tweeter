@@ -27,6 +27,7 @@ const UserInfo = () => {
     displayErrorMessage: displayErrorMessage,
     deleteMessage: deleteMessage
   }
+
   const presenterRef = useRef<UserInfoPresenter | null>(null)
   if (!presenterRef.current) {
     presenterRef.current = new UserInfoPresenter(view)

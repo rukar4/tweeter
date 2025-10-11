@@ -4,7 +4,6 @@ export interface AuthView {
   displayInfoMessage: (
     message: string,
     duration: number,
-    bootstrapClasses?: string,
   ) => string,
   displayErrorMessage: (
     message: string,
