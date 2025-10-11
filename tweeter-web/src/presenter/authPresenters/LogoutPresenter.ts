@@ -1,26 +1,24 @@
 import { AuthToken } from "tweeter-shared";
-import { AuthPresenter, AuthView } from "./AuthPresenter";
+import { MessageView, Presenter } from "../Presenter";
+import { AuthService } from "../../model.service/AuthService";
 
-export interface LogoutView extends AuthView {
-  deleteMessage: (messageId: string) => void,
+export interface LogoutView extends MessageView {
   clearUserInfo: () => void,
-  navigateToLogin: () => void
+  navigateToLogin: () => void,
 }
 
-export class LogoutPresenter extends AuthPresenter<LogoutView> {
-  public async logout(authToken: AuthToken) {
-    const loggingOutToastId = this._view.displayInfoMessage("Logging Out...", 0)
+export class LogoutPresenter extends Presenter<LogoutView> {
+  private authService = new AuthService()
 
-    try {
+  public async logout(authToken: AuthToken) {
+    const loggingOutToastId = this.view.displayInfoMessage("Logging Out...", 0)
+
+    await this.executeOperation(async () => {
       await this.authService.logout(authToken)
 
-      this._view.deleteMessage(loggingOutToastId)
-      this._view.clearUserInfo()
-      this._view.navigateToLogin()
-    } catch (error) {
-      this._view.displayErrorMessage(
-        `Failed to log user out because of exception: ${ error }`
-      )
-    }
+      this.view.deleteMessage(loggingOutToastId)
+      this.view.clearUserInfo()
+      this.view.navigateToLogin()
+    }, 'log user out')
   }
 }

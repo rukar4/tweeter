@@ -21,13 +21,14 @@ const Register = () => {
 
   const navigate = useNavigate();
   const { updateUserInfo } = useUserInfoActions();
-  const { displayErrorMessage, displayInfoMessage } = useMessageActions();
+  const { displayErrorMessage, displayInfoMessage, deleteMessage } = useMessageActions();
 
   const view: RegisterView = {
     setIsLoading: setIsLoading,
     updateUserInfo: updateUserInfo,
     displayInfoMessage: displayInfoMessage,
     displayErrorMessage: displayErrorMessage,
+    deleteMessage: deleteMessage,
     navigateToOriginal: (url: string) => navigate(url),
     navigateToFeed: (alias: string) => navigate(`/feed/${ alias }`),
     setImageBytes: setImageBytes,

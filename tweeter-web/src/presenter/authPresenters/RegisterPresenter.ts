@@ -1,8 +1,7 @@
 import { Buffer } from "buffer";
-import { AuthPresenter } from "./AuthPresenter";
-import { LoginView } from "./LoginPresenter";
+import { AuthPresenter, AuthView } from "./AuthPresenter";
 
-export interface RegisterView extends LoginView {
+export interface RegisterView extends AuthView {
   setImageBytes: (bytes: Uint8Array) => void,
   setImageUrl: (url: string) => void,
   setImageFileExtension: (ext: string) => void
@@ -18,32 +17,16 @@ export class RegisterPresenter extends AuthPresenter<RegisterView> {
     imageFileExtension: string,
     rememberMe: boolean
   ) {
-    try {
-      this._view.setIsLoading(true);
-
-      const [user, authToken] = await this.authService.register(
-        firstName,
-        lastName,
-        alias,
-        password,
-        imageBytes,
-        imageFileExtension
-      );
-
-      this._view.updateUserInfo(user, user, authToken, rememberMe);
-      this._view.navigateToFeed(alias)
-    } catch (error) {
-      this._view.displayErrorMessage(
-        `Failed to register user because of exception: ${ error }`
-      );
-    } finally {
-      this._view.setIsLoading(false);
-    }
+    await this.authenticate(
+      () => this.authService.register(firstName, lastName, alias, password, imageBytes, imageFileExtension),
+      rememberMe,
+      'register user'
+    )
   }
 
   public handleImageFile(file: File | undefined) {
     if (file) {
-      this._view.setImageUrl(URL.createObjectURL(file));
+      this.view.setImageUrl(URL.createObjectURL(file));
 
       const reader = new FileReader();
       reader.onload = (event: ProgressEvent<FileReader>) => {
@@ -58,18 +41,18 @@ export class RegisterPresenter extends AuthPresenter<RegisterView> {
           "base64"
         );
 
-        this._view.setImageBytes(bytes);
+        this.view.setImageBytes(bytes);
       };
       reader.readAsDataURL(file);
 
       // Set image file extension (and move to a separate method)
       const fileExtension = this.getFileExtension(file);
       if (fileExtension) {
-        this._view.setImageFileExtension(fileExtension);
+        this.view.setImageFileExtension(fileExtension);
       }
     } else {
-      this._view.setImageUrl("");
-      this._view.setImageBytes(new Uint8Array());
+      this.view.setImageUrl("");
+      this.view.setImageBytes(new Uint8Array());
     }
   };
 
