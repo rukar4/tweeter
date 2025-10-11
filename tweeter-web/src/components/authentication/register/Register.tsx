@@ -6,13 +6,9 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import AuthenticationFields from "../AuthenticationFields";
 import { useMessageActions } from "../../toaster/MessageHooks";
 import { useUserInfoActions } from "../../userInfo/UserHooks";
-import { RegisterPresenter, RegisterView } from "../../../presenter/AuthPresenter";
+import { RegisterPresenter, RegisterView } from "../../../presenter/authPresenters/RegisterPresenter";
 
-interface Props {
-  presenterFactory: (view: RegisterView) => RegisterPresenter
-}
-
-const Register = (props: Props) => {
+const Register = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [alias, setAlias] = useState("");
@@ -41,7 +37,7 @@ const Register = (props: Props) => {
 
   const presenterRef = useRef<RegisterPresenter | null>(null)
   if (!presenterRef.current) {
-    presenterRef.current = props.presenterFactory(view)
+    presenterRef.current = new RegisterPresenter(view)
   }
 
   const checkSubmitButtonStatus = (): boolean => {

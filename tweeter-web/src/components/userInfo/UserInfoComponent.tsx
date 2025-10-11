@@ -5,11 +5,7 @@ import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo, useUserInfoActions } from "./UserHooks";
 import { UserInfoPresenter, UserInfoView } from "../../presenter/userPresenters/UserInfoPresenter";
 
-interface Props {
-  presenterFactory: (view: UserInfoView) => UserInfoPresenter
-}
-
-const UserInfo = (props: Props) => {
+const UserInfo = () => {
   const [isFollower, setIsFollower] = useState(false)
   const [followeeCount, setFolloweeCount] = useState(-1)
   const [followerCount, setFollowerCount] = useState(-1)
@@ -33,7 +29,7 @@ const UserInfo = (props: Props) => {
   }
   const presenterRef = useRef<UserInfoPresenter | null>(null)
   if (!presenterRef.current) {
-    presenterRef.current = props.presenterFactory(view)
+    presenterRef.current = new UserInfoPresenter(view)
   }
 
   if (!displayedUser) {

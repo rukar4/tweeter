@@ -3,23 +3,20 @@ import { Outlet } from "react-router-dom";
 import AppNavbar from "../appNavbar/AppNavbar";
 import PostStatus from "../postStatus/PostStatus";
 import UserInfo from "../userInfo/UserInfoComponent";
-import { PostStatusPresenter, PostStatusView } from "../../presenter/statusPresenters/PostStatusPresenter";
-import { LogoutPresenter, LogoutView } from "../../presenter/AuthPresenter";
-import { UserInfoPresenter, UserInfoView } from "../../presenter/userPresenters/UserInfoPresenter";
 
 const MainLayout = () => {
   return (
     <>
-      <AppNavbar  presenterFactory={ (view: LogoutView) => new LogoutPresenter(view) }/>
+      <AppNavbar />
       <div className="container mx-auto px-3 w-100">
         <div className="row gx-4">
           <div className="col-4">
             <div className="row gy-4">
               <div className="p-3 mb-4 border rounded bg-light">
-                <UserInfo presenterFactory={ (view: UserInfoView) => new UserInfoPresenter(view) }/>
+                <UserInfo />
               </div>
               <div className="p-3 border mt-1 rounded bg-light">
-                <PostStatus presenterFactory={ (view: PostStatusView) => new PostStatusPresenter(view)} />
+                <PostStatus />
               </div>
             </div>
           </div>

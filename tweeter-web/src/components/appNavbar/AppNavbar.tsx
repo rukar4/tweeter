@@ -4,14 +4,10 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Image from "react-bootstrap/Image";
 import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo, useUserInfoActions } from "../userInfo/UserHooks";
-import { LogoutPresenter, LogoutView } from "../../presenter/AuthPresenter";
+import { LogoutPresenter, LogoutView } from "../../presenter/authPresenters/LogoutPresenter";
 import { useRef } from "react";
 
-interface Props {
-  presenterFactory: (view: LogoutView) => LogoutPresenter
-}
-
-const AppNavbar = (props: Props) => {
+const AppNavbar = () => {
   const location = useLocation();
   const { authToken, displayedUser } = useUserInfo();
   const { clearUserInfo } = useUserInfoActions();
@@ -28,7 +24,7 @@ const AppNavbar = (props: Props) => {
 
   const presenterRef = useRef<LogoutPresenter | null>(null)
   if (!presenterRef.current) {
-    presenterRef.current = props.presenterFactory(view)
+    presenterRef.current = new LogoutPresenter(view)
   }
 
   const logout = async () => {

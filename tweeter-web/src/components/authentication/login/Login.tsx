@@ -6,11 +6,10 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import AuthenticationFields from "../AuthenticationFields";
 import { useMessageActions } from "../../toaster/MessageHooks";
 import { useUserInfoActions } from "../../userInfo/UserHooks";
-import { LoginPresenter, LoginView } from "../../../presenter/AuthPresenter";
+import { LoginPresenter, LoginView } from "../../../presenter/authPresenters/LoginPresenter";
 
 interface Props {
-  originalUrl?: string;
-  presenterFactory: (view: LoginView) => LoginPresenter
+  originalUrl?: string
 }
 
 const Login = (props: Props) => {
@@ -31,9 +30,10 @@ const Login = (props: Props) => {
     navigateToOriginal: (url: string) => navigate(url),
     navigateToFeed: (alias: string) => navigate(`/feed/${ alias }`)
   }
+  
   const presenterRef = useRef<LoginPresenter | null>(null)
   if (!presenterRef.current) {
-    presenterRef.current = props.presenterFactory(view)
+    presenterRef.current = new LoginPresenter(view)
   }
 
   const checkSubmitButtonStatus = (): boolean => {
