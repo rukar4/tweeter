@@ -3,8 +3,8 @@ import { User } from "tweeter-shared";
 import { useUserNavigation } from "../userInfo/UserHooks";
 
 interface Props {
-  user: User;
-  featurePath: string;
+  user: User
+  featurePath: string
 }
 
 const UserItem = (props: Props) => {

@@ -4,8 +4,8 @@ import { Status } from "tweeter-shared";
 import { useUserNavigation } from "../userInfo/UserHooks";
 
 interface Props {
-  status: Status;
-  featurePath: string;
+  status: Status
+  featurePath: string
 }
 
 const StatusItem = (props: Props) => {

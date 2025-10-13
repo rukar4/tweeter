@@ -1,33 +1,32 @@
 import { useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { User } from "tweeter-shared";
 import { useParams } from "react-router-dom";
-import UserItem from "../userItem/UserItem";
 import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo, useUserInfoActions } from "../userInfo/UserHooks";
-import { UserItemPresenter } from "../../presenter/userPresenters/UserItemPresenter";
-import { PagedItemView } from "../../presenter/PagedItemPresenter";
+import { PagedItemPresenter, PagedItemView } from "../../presenter/PagedItemPresenter";
+import { Service } from "../../model.service/Service";
 
-interface Props {
+interface Props<T, U extends Service> {
   featurePath: string,
-  presenterFactory: (view: PagedItemView<User>) => UserItemPresenter
+  presenterFactory: (view: PagedItemView<T>) => PagedItemPresenter<T, U>,
+  itemFactory: (item: T, featurePath: string) => React.ReactNode
 }
 
-const UserItemScroller = (props: Props) => {
+const ItemScroller = <T, U extends Service>(props: Props<T, U>) => {
   const { displayErrorMessage } = useMessageActions();
-  const [items, setItems] = useState<User[]>([]);
+  const [items, setItems] = useState<T[]>([]);
 
   const { displayedUser, authToken } = useUserInfo();
   const { setDisplayedUser } = useUserInfoActions();
   const { displayedUser: displayedUserAliasParam } = useParams();
 
-  const view: PagedItemView<User> = {
-    addItems: (newItems: User[]) =>
+  const view: PagedItemView<T> = {
+    addItems: (newItems: T[]) =>
       setItems((previousItems) => [...previousItems, ...newItems]),
     displayErrorMessage: displayErrorMessage
   }
 
-  const presenterRef = useRef<UserItemPresenter | null>(null)
+  const presenterRef = useRef<PagedItemPresenter<T, U> | null>(null)
   if (!presenterRef.current) {
     presenterRef.current = props.presenterFactory(view)
   }
@@ -49,12 +48,12 @@ const UserItemScroller = (props: Props) => {
 
   // Initialize the component whenever the displayed user changes
   useEffect(() => {
-    reset();
-    loadMoreItems();
-  }, [displayedUser]);
+    reset()
+    loadMoreItems()
+  }, [displayedUser])
 
   const reset = async () => {
-    setItems(() => []);
+    setItems(() => [])
     presenterRef.current!.reset()
   };
 
@@ -76,7 +75,7 @@ const UserItemScroller = (props: Props) => {
             key={ index }
             className="row mb-3 mx-0 px-0 border rounded bg-white"
           >
-            <UserItem user={ item } featurePath={ props.featurePath }/>
+            { props.itemFactory(item, props.featurePath) }
           </div>
         )) }
       </InfiniteScroll>
@@ -84,4 +83,4 @@ const UserItemScroller = (props: Props) => {
   );
 };
 
-export default UserItemScroller;
+export default ItemScroller;
