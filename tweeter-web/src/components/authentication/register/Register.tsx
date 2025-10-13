@@ -7,6 +7,7 @@ import AuthenticationFields from "../AuthenticationFields";
 import { useMessageActions } from "../../toaster/MessageHooks";
 import { useUserInfoActions } from "../../userInfo/UserHooks";
 import { RegisterPresenter, RegisterView } from "../../../presenter/authPresenters/RegisterPresenter";
+import { renderHook } from "@testing-library/react";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -58,9 +59,24 @@ const Register = () => {
     }
   }
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-    presenterRef.current!.handleImageFile(file)
+    if (!file) {
+      // call presenter with empty data
+      presenterRef.current!.handleImageFile('', '', '')
+      return
+    }
+
+    const imageUrl = URL.createObjectURL(file)
+    const bytes64 = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = e => resolve(e.target?.result as string)
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
+
+    // pass bytes and file name to presenter
+    presenterRef.current!.handleImageFile(bytes64, file.name, imageUrl)
   }
 
   const register = async () => {

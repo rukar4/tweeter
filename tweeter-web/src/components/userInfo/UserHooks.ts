@@ -12,24 +12,29 @@ export const useUserInfoActions = () => {
   return useContext(UserInfoActionsContext);
 }
 
-export const useUserNavigation = async (event: React.MouseEvent, featurePath: string) => {
+export const useUserNavigation = () => {
   const { displayedUser, authToken } = useUserInfo();
   const { setDisplayedUser } = useUserInfoActions();
   const navigate = useNavigate();
   const { displayErrorMessage } = useMessageActions();
 
-  event.preventDefault();
-
-  const view: UserNavigationView = {
-    setDisplayedUser: setDisplayedUser,
-    navigateToFeature: (alias: string) => navigate(`${ featurePath }/${ alias }`),
-    displayErrorMessage
-  }
-
-  const presenterRef = useRef<UserNavigationPresenter | null>(null)
+  const presenterRef = useRef<UserNavigationPresenter | null>(null);
   if (!presenterRef.current) {
-    presenterRef.current = new UserNavigationPresenter(view)
+    const view: UserNavigationView = {
+      setDisplayedUser,
+      navigateToFeature: (alias: string, featurePath: string) => navigate(`${ featurePath }/${alias}`),
+      displayErrorMessage
+    };
+    presenterRef.current = new UserNavigationPresenter(view);
   }
 
-  await presenterRef.current!.useUserNavigation(authToken!, event.target.toString(), displayedUser!)
+  return async (event: React.MouseEvent, featurePath: string) => {
+    event.preventDefault()
+    await presenterRef.current!.useUserNavigation(
+      authToken!,
+      event.currentTarget.toString(),
+      featurePath,
+      displayedUser!
+    )
+  }
 }

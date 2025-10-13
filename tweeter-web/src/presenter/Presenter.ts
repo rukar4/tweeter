@@ -26,6 +26,17 @@ export abstract class Presenter<V extends View> {
     }
   }
 
+  protected async updateCount<T>(
+    desc: string,
+    serviceCall: () => Promise<T>,
+    viewSetter: (value: T) => void
+  ) {
+    await this.executeOperation(async () => {
+      const result = await serviceCall()
+      viewSetter(result)
+    }, `get ${ desc } count`)
+  }
+
   get view(): V {
     return this._view;
   }

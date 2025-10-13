@@ -10,29 +10,28 @@ export interface PostStatusView extends MessageView {
 export class PostStatusPresenter extends Presenter<PostStatusView> {
   private statusService: StatusService = new StatusService()
 
-  public async submitPost (post: string, currentUser: User, authToken: AuthToken) {
+  public async submitPost(post: string, currentUser: User, authToken: AuthToken) {
     let postingStatusToastId = "";
 
-    try {
-      this.view.setIsLoading(true);
-      postingStatusToastId = this.view.displayInfoMessage(
-        "Posting status...",
-        0
-      );
+    await this.executeOperation(
+      async () => {
+        this.view.setIsLoading(true)
+        postingStatusToastId = this.view.displayInfoMessage(
+          "Posting status...",
+          0
+        )
 
-      const status = new Status(post, currentUser, Date.now());
+        const status = new Status(post, currentUser, Date.now())
 
-      await this.statusService.postStatus(authToken, status);
+        await this.statusService.postStatus(authToken, status)
 
-      this.view.clearPost();
-      this.view.displayInfoMessage("Status posted!", 2000);
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to post the status because of exception: ${ error }`
-      );
-    } finally {
-      this.view.deleteMessage(postingStatusToastId);
-      this.view.setIsLoading(false);
-    }
-  };
+        this.view.clearPost();
+        this.view.displayInfoMessage("Status posted!", 2000);
+      },
+      'post the status',
+      () => {
+        this.view.deleteMessage(postingStatusToastId)
+        this.view.setIsLoading(false)
+      })
+  }
 }

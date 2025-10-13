@@ -8,6 +8,8 @@ interface Props {
 }
 
 const Post = (props: Props) => {
+  const handleUserNavigation = useUserNavigation()
+
   return (
     <>
       { props.status.segments.map((segment, index) =>
@@ -15,7 +17,7 @@ const Post = (props: Props) => {
           <Link
             key={ index }
             to={ `${ props.featurePath }/${ segment.text }` }
-            onClick={ (event) => useUserNavigation(event, props.featurePath) }
+            onClick={ (event) => handleUserNavigation(event, props.featurePath) }
           >
             { segment.text }
           </Link>

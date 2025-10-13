@@ -9,6 +9,8 @@ interface Props {
 }
 
 const StatusItem = (props: Props) => {
+  const handleUserNavigation = useUserNavigation()
+
   return (
     <div className="col bg-light mx-0 px-0">
       <div className="container px-0">
@@ -29,7 +31,7 @@ const StatusItem = (props: Props) => {
               -{ " " }
               <Link
                 to={ `${ props.featurePath }/${ props.status.user.alias }` }
-                onClick={ (event) => useUserNavigation(event, props.featurePath) }
+                onClick={ (event) => handleUserNavigation(event, props.featurePath) }
               >
                 { props.status.user.alias }
               </Link>

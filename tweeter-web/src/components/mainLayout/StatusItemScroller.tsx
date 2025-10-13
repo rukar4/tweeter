@@ -27,7 +27,7 @@ const StatusItemScroller = (props: Props) => {
     displayErrorMessage: displayErrorMessage
   }
 
-  const presenterRef =  useRef<StatusItemPresenter | null>(null)
+  const presenterRef = useRef<StatusItemPresenter | null>(null)
   if (!presenterRef.current) {
     presenterRef.current = props.presenterFactory(view)
   }
@@ -59,7 +59,7 @@ const StatusItemScroller = (props: Props) => {
   };
 
   const loadMoreItems = async () => {
-    presenterRef.current!.loadMoreItems(authToken!, displayedUser!.alias)
+    await presenterRef.current!.loadMoreItems(authToken!, displayedUser!.alias)
   };
 
   return (
@@ -76,10 +76,7 @@ const StatusItemScroller = (props: Props) => {
             key={ index }
             className="row mb-3 mx-0 px-0 border rounded bg-white"
           >
-            <StatusItem
-              status={ item }
-              featurePath={ props.featurePath }
-            />
+            <StatusItem status={ item } featurePath={ props.featurePath }/>
           </div>
         )) }
       </InfiniteScroll>

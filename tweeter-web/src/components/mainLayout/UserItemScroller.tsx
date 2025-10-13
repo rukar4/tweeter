@@ -17,7 +17,6 @@ const UserItemScroller = (props: Props) => {
   const { displayErrorMessage } = useMessageActions();
   const [items, setItems] = useState<User[]>([]);
 
-
   const { displayedUser, authToken } = useUserInfo();
   const { setDisplayedUser } = useUserInfoActions();
   const { displayedUser: displayedUserAliasParam } = useParams();
@@ -60,7 +59,7 @@ const UserItemScroller = (props: Props) => {
   };
 
   const loadMoreItems = async () => {
-    presenterRef.current!.loadMoreItems(authToken!, displayedUser!.alias)
+    await presenterRef.current!.loadMoreItems(authToken!, displayedUser!.alias)
   };
 
   return (

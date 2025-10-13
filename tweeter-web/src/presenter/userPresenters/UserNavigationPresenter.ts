@@ -1,45 +1,36 @@
-import { UserService } from "../../model.service/UserService";
-import { AuthToken, User } from "tweeter-shared";
+import { UserService } from "../../model.service/UserService"
+import { AuthToken, User } from "tweeter-shared"
+import { Presenter } from "../Presenter"
 
 export interface UserNavigationView {
   setDisplayedUser: (user: User) => void,
-  navigateToFeature: (alias: string) => void
+  navigateToFeature: (alias: string, featurePath: string) => void
   displayErrorMessage: (
     message: string,
     bootstrapClasses?: string,
   ) => string,
 }
 
-export class UserNavigationPresenter {
-  private userService: UserService
-  private _view: UserNavigationView
+export class UserNavigationPresenter extends Presenter<UserNavigationView> {
+  private userService: UserService = new UserService()
 
-  public constructor(view: UserNavigationView) {
-    this.userService = new UserService()
-    this._view = view
-  }
-
-  public async useUserNavigation(authToken: AuthToken, url: string, user: User) {
-    try {
+  public async useUserNavigation(authToken: AuthToken, url: string, featurePath: string, user: User) {
+    await this.executeOperation(async () => {
       const alias = this.extractAlias(url);
 
-      const toUser = await this.userService.getUser(authToken!, alias);
+      const toUser = await this.userService.getUser(authToken!, alias)
 
       if (toUser) {
         if (!toUser.equals(user!)) {
-          this._view.setDisplayedUser(toUser);
-          this._view.navigateToFeature(alias)
+          this.view.setDisplayedUser(toUser)
+          this.view.navigateToFeature(alias, featurePath)
         }
       }
-    } catch (error) {
-      this._view.displayErrorMessage(
-        `Failed to get user because of exception: ${ error }`
-      );
-    }
+    }, 'get user')
   }
 
   private extractAlias(value: string): string {
-    const index = value.indexOf("@");
-    return value.substring(index);
+    const index = value.indexOf("@")
+    return value.substring(index)
   };
 }
