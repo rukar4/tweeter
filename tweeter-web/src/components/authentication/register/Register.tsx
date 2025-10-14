@@ -7,7 +7,6 @@ import AuthenticationFields from "../AuthenticationFields";
 import { useMessageActions } from "../../toaster/MessageHooks";
 import { useUserInfoActions } from "../../userInfo/UserHooks";
 import { RegisterPresenter, RegisterView } from "../../../presenter/authPresenters/RegisterPresenter";
-import { renderHook } from "@testing-library/react";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -141,7 +140,7 @@ const Register = () => {
   const switchAuthenticationMethodFactory = () => {
     return (
       <div className="mb-3">
-        Algready registered? <Link to="/login">Sign in</Link>
+        Already registered? <Link to="/login">Sign in</Link>
       </div>
     );
   };
