@@ -16,16 +16,18 @@ const UserInfo = () => {
   const { currentUser, authToken, displayedUser } = useUserInfo()
   const { setDisplayedUser } = useUserInfoActions()
   const navigate = useNavigate()
-  const location = useLocation()
 
   const view: UserInfoView = {
     setIsFollower: setIsFollower,
     setIsLoading: setIsLoading,
     setFolloweeCount: setFolloweeCount,
     setFollowerCount: setFollowerCount,
+    setDisplayedUser: setDisplayedUser,
     displayInfoMessage: displayInfoMessage,
     displayErrorMessage: displayErrorMessage,
-    deleteMessage: deleteMessage
+    deleteMessage: deleteMessage,
+    switchToLoggedInUser: (url: string) =>
+      navigate(`${url}/${currentUser!.alias}`)
   }
 
   const presenterRef = useRef<UserInfoPresenter | null>(null)
@@ -45,14 +47,8 @@ const UserInfo = () => {
 
   const switchToLoggedInUser = (event: React.MouseEvent): void => {
     event.preventDefault()
-    setDisplayedUser(currentUser!)
-    navigate(`${getBaseUrl()}/${currentUser!.alias}`)
+    presenterRef.current!.switchToLoggedInUser(currentUser)
   }
-
-  const getBaseUrl = (): string => {
-    const segments = location.pathname.split("/@");
-    return segments.length > 1 ? segments[0] : "/";
-  };
 
 
   const followDisplayedUser = async (

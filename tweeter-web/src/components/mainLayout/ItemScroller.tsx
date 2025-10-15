@@ -5,6 +5,7 @@ import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo, useUserInfoActions } from "../userInfo/UserHooks";
 import { PagedItemPresenter, PagedItemView } from "../../presenter/PagedItemPresenter";
 import { Service } from "../../model.service/Service";
+import { Status, User } from "tweeter-shared";
 
 interface Props<T, U extends Service> {
   featurePath: string,
@@ -12,7 +13,7 @@ interface Props<T, U extends Service> {
   itemFactory: (item: T, featurePath: string) => React.ReactNode
 }
 
-const ItemScroller = <T, U extends Service>(props: Props<T, U>) => {
+const ItemScroller = <T extends Status | User, U extends Service>(props: Props<T, U>) => {
   const { displayErrorMessage } = useMessageActions();
   const [items, setItems] = useState<T[]>([]);
 

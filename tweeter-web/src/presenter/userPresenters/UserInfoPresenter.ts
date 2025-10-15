@@ -1,15 +1,14 @@
 import { UserService } from "../../model.service/UserService"
 import { AuthToken, User } from "tweeter-shared"
-import { Presenter } from "../Presenter";
+import { MessageView, Presenter } from "../Presenter";
 
-export interface UserInfoView {
+export interface UserInfoView extends MessageView{
   setIsFollower: (isFollower: boolean) => void,
   setFolloweeCount: (followeeCount: number) => void,
   setFollowerCount: (followerCount: number) => void,
   setIsLoading: (isLoading: boolean) => void,
-  displayInfoMessage: (message: string, duration: number,) => string,
-  displayErrorMessage: (message: string) => void,
-  deleteMessage: (message: string) => void
+  setDisplayedUser: (displayedUser: User) => void,
+  switchToLoggedInUser: (url: string) => void
 }
 
 export class UserInfoPresenter extends Presenter<UserInfoView> {
@@ -83,4 +82,15 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
       }
     )
   }
+
+  public switchToLoggedInUser(currentUser: User) {
+    let url = this.getBaseUrl()
+    this.view.setDisplayedUser(currentUser)
+    this.view.switchToLoggedInUser(url)
+  }
+
+  public getBaseUrl = (): string => {
+    const segments = location.pathname.split("/@");
+    return segments.length > 1 ? segments[0] : "/";
+  };
 }

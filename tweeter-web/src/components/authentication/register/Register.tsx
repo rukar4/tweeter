@@ -134,16 +134,16 @@ const Register = () => {
           ) }
         </div>
       </>
-    );
-  };
+    )
+  }
 
   const switchAuthenticationMethodFactory = () => {
     return (
       <div className="mb-3">
         Already registered? <Link to="/login">Sign in</Link>
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <AuthenticationFormLayout
