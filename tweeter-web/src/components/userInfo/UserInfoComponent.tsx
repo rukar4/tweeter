@@ -47,7 +47,7 @@ const UserInfo = () => {
 
   const switchToLoggedInUser = (event: React.MouseEvent): void => {
     event.preventDefault()
-    presenterRef.current!.switchToLoggedInUser(currentUser)
+    presenterRef.current!.switchToLoggedInUser(currentUser!)
   }
 
 
