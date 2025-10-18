@@ -18,7 +18,7 @@ export class RegisterPresenter extends AuthPresenter<RegisterView> {
     rememberMe: boolean
   ) {
     await this.authenticate(
-      () => this.authService.register(firstName, lastName, alias, password, imageBytes, imageFileExtension),
+      () => this.userService.register(firstName, lastName, alias, password, imageBytes, imageFileExtension),
       rememberMe,
       'register user'
     )

@@ -1,6 +1,7 @@
 import { StatusService } from "../../model.service/StatusService";
 import { AuthToken, Status, User } from "tweeter-shared";
 import { MessageView, Presenter } from "../Presenter";
+import post from "../../components/statusItem/Post";
 
 export interface PostStatusView extends MessageView {
   setIsLoading: (isLoading: boolean) => void
@@ -8,7 +9,7 @@ export interface PostStatusView extends MessageView {
 }
 
 export class PostStatusPresenter extends Presenter<PostStatusView> {
-  private statusService: StatusService = new StatusService()
+  private _statusService: StatusService = new StatusService()
 
   public async submitPost(post: string, currentUser: User, authToken: AuthToken) {
     let postingStatusToastId = "";
@@ -33,5 +34,10 @@ export class PostStatusPresenter extends Presenter<PostStatusView> {
         this.view.deleteMessage(postingStatusToastId)
         this.view.setIsLoading(false)
       })
+  }
+
+
+  get statusService(): StatusService {
+    return this._statusService;
   }
 }

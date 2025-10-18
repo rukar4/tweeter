@@ -1,6 +1,6 @@
-import { UserService } from "../../model.service/UserService"
 import { AuthToken, User } from "tweeter-shared"
 import { MessageView, Presenter } from "../Presenter";
+import { FollowService } from "../../model.service/FollowService";
 
 export interface UserInfoView extends MessageView{
   setIsFollower: (isFollower: boolean) => void,
@@ -12,7 +12,7 @@ export interface UserInfoView extends MessageView{
 }
 
 export class UserInfoPresenter extends Presenter<UserInfoView> {
-  private userService: UserService = new UserService()
+  private followService: FollowService = new FollowService()
 
   public async setIsFollowerStatus(
     authToken: AuthToken,
@@ -24,7 +24,7 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
         this.view.setIsFollower(false);
       } else {
         this.view.setIsFollower(
-          await this.userService.getIsFollowerStatus(authToken!, currentUser!, displayedUser!)
+          await this.followService.getIsFollowerStatus(authToken!, currentUser!, displayedUser!)
         );
       }
     }, 'determine follower status')
@@ -36,7 +36,7 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
   ) {
     await this.updateCount(
       'followees',
-      () => this.userService.getFolloweeCount(authToken, user),
+      () => this.followService.getFolloweeCount(authToken, user),
       (count) => this.view.setFolloweeCount(count)
     )
   }
@@ -47,7 +47,7 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
   ) {
     await this.updateCount(
       'followers',
-      () => this.userService.getFollowerCount(authToken, user),
+      () => this.followService.getFollowerCount(authToken, user),
       (count) => this.view.setFollowerCount(count)
     )
   }
@@ -68,8 +68,8 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
         )
 
         const [followerCount, followeeCount] = isFollower
-          ? await this.userService.follow(authToken, user)
-          : await this.userService.unfollow(authToken, user)
+          ? await this.followService.follow(authToken, user)
+          : await this.followService.unfollow(authToken, user)
 
         this.view.setIsFollower(isFollower)
         this.view.setFollowerCount(followerCount)

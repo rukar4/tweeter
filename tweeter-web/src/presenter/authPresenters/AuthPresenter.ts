@@ -1,6 +1,6 @@
-import { AuthService } from "../../model.service/AuthService";
 import { MessageView, Presenter } from "../Presenter";
 import { AuthToken, User } from "tweeter-shared";
+import { UserService } from "../../model.service/UserService";
 
 export interface AuthView extends MessageView {
   setIsLoading: (isLoading: boolean) => void
@@ -10,7 +10,7 @@ export interface AuthView extends MessageView {
 }
 
 export abstract class AuthPresenter<T extends AuthView> extends Presenter<T> {
-  private _authService: AuthService = new AuthService()
+  private _userService: UserService = new UserService()
 
   protected async authenticate(
     operation: () => Promise<[User, AuthToken]>,
@@ -33,7 +33,7 @@ export abstract class AuthPresenter<T extends AuthView> extends Presenter<T> {
     }, operationDesc, () => this.view.setIsLoading(false))
   }
 
-  protected get authService(): AuthService {
-    return this._authService;
+  protected get userService(): UserService {
+    return this._userService;
   }
 }

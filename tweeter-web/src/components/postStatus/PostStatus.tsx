@@ -4,7 +4,11 @@ import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo } from "../userInfo/UserHooks";
 import { PostStatusPresenter, PostStatusView } from "../../presenter/statusPresenters/PostStatusPresenter";
 
-const PostStatus = () => {
+interface Props {
+  presenter?: PostStatusPresenter
+}
+
+const PostStatus = (props: Props) => {
   const { displayInfoMessage, displayErrorMessage, deleteMessage } = useMessageActions()
 
   const { currentUser, authToken } = useUserInfo()
@@ -21,7 +25,7 @@ const PostStatus = () => {
 
   const presenterRef = useRef<PostStatusPresenter | null>(null)
   if (!presenterRef.current) {
-    presenterRef.current = new PostStatusPresenter(view)
+    presenterRef.current = props.presenter ?? new PostStatusPresenter(view)
   }
 
   const submitPost = async (event: React.MouseEvent) => {
@@ -46,6 +50,7 @@ const PostStatus = () => {
           id="postStatusTextArea"
           rows={ 10 }
           placeholder="What's on your mind?"
+          aria-label="status-field"
           value={ post }
           onChange={ (event) => {
             setPost(event.target.value);
@@ -57,6 +62,7 @@ const PostStatus = () => {
           id="postStatusButton"
           className="btn btn-md btn-primary me-1"
           type="button"
+          aria-label="post-status"
           disabled={ checkButtonStatus() }
           style={ { width: "8em" } }
           onClick={ submitPost }
@@ -75,6 +81,7 @@ const PostStatus = () => {
           id="clearStatusButton"
           className="btn btn-md btn-secondary"
           type="button"
+          aria-label="clear"
           disabled={ checkButtonStatus() }
           onClick={ clearPost }
         >
