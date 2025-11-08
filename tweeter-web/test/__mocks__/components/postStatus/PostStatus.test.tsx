@@ -32,7 +32,6 @@ describe("PostStatus Component", () => {
   const mockAuthTokenInstance  = instance(mockAuthToken)
 
   beforeAll(() => {
-
     (useUserInfo as jest.Mock).mockReturnValue({
       currentUser: mockUserInstance,
       authToken: mockAuthTokenInstance,
