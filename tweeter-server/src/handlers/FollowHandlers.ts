@@ -1,4 +1,5 @@
 import {
+  GetCountResponse,
   IsFollowerRequest,
   IsFollowerResponse,
   PagedUserItemRequest,
@@ -42,12 +43,26 @@ export async function getIsFollowerStatusHandler(req: IsFollowerRequest): Promis
   }
 }
 
-export function getFolloweeCountHandler(req: UserRequest) {
+export async function getFolloweeCountHandler(req: UserRequest): Promise<GetCountResponse> {
+  const followService = new FollowService()
+  const count  = await followService.getFolloweeCount(req.token, req.user)
 
+  return {
+    success: true,
+    message: null,
+    count: count
+  }
 }
 
-export function getFollowerCountHandler(req: UserRequest) {
+export async function getFollowerCountHandler(req: UserRequest) {
+  const followService = new FollowService()
+  const count  = await followService.getFollowerCount(req.token, req.user)
 
+  return {
+    success: true,
+    message: null,
+    count: count
+  }
 }
 
 export function followHandler(req: UserRequest) {

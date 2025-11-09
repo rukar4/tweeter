@@ -280,6 +280,7 @@ Resources:
             RestApiId: !Ref tweeterApi
             Path: /followees/list
             Method: POST
+
   getFollowersFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -294,6 +295,7 @@ Resources:
             RestApiId: !Ref tweeterApi
             Path: /followers/list
             Method: POST
+
   getIsFollowerStatusFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -308,6 +310,7 @@ Resources:
             RestApiId: !Ref tweeterApi
             Path: /followers/status
             Method: POST
+
   getFolloweeCountFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -322,6 +325,7 @@ Resources:
             RestApiId: !Ref tweeterApi
             Path: /followees/count
             Method: POST
+
   getFollowerCountFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -336,6 +340,7 @@ Resources:
             RestApiId: !Ref tweeterApi
             Path: /followers/count
             Method: POST
+
   followFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -350,6 +355,7 @@ Resources:
             RestApiId: !Ref tweeterApi
             Path: /follow
             Method: POST
+
   unfollowFunction:
     Type: AWS::Serverless::Function
     Properties:
