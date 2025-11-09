@@ -15,7 +15,7 @@ export class FollowService extends Service {
         token: authToken.token,
         userAlias,
         pageSize,
-        lastItem
+        lastItem: lastItem?.dto ?? null
       },
       listType
     )
@@ -32,13 +32,18 @@ export class FollowService extends Service {
       selectedUser: selectedUser.dto
     })
   }
-  
+
   public async getCount(
     authToken: AuthToken,
     user: User,
     itemsDesc: ListType
   ): Promise<number> {
-    return FakeData.instance.getFolloweeCount(user.alias)
+    return this.serverFacade.getCount({
+        token: authToken.token,
+        user: user.dto
+      },
+      itemsDesc
+    )
   }
 
   public async updateFollowing(

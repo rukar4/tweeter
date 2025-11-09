@@ -1,10 +1,11 @@
 import {
+  GetCountResponse,
   IsFollowerRequest, IsFollowerResponse,
   ListType,
   PagedUserItemRequest,
   PagedUserItemResponse,
   User,
-  UserDto,
+  UserDto, UserRequest,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
@@ -46,10 +47,29 @@ export class ServerFacade {
 
     if (res.success) {
       const isFollower = res.isFollower ?? null
-      if (!isFollower === null) {
+      if (isFollower === null) {
         throw new Error('No status found in response')
       } else {
         return isFollower
+      }
+    } else {
+      console.error(res);
+      throw new Error(res.message ?? undefined);
+    }
+  }
+
+  public async getCount(req: UserRequest, listType: ListType): Promise<number> {
+    const res = await this.clientCommunicator.doPost<
+      UserRequest,
+      GetCountResponse
+    >(req, `/${listType}/count`)
+
+    if (res.success) {
+      const count = res.count ?? null
+      if (count === null) {
+        throw new Error('No count in response')
+      } else {
+        return count
       }
     } else {
       console.error(res);
