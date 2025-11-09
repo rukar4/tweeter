@@ -1,3 +1,4 @@
 /dist
 /node_modules
-/nodejs
+.aws-sam/
+nodejs/

@@ -34,9 +34,10 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
     authToken: AuthToken,
     user: User
   ) {
+    const desc = 'followees'
     await this.updateCount(
-      'followees',
-      () => this.followService.getFolloweeCount(authToken, user),
+      desc,
+      () => this.followService.getCount(authToken, user, desc),
       (count) => this.view.setFolloweeCount(count)
     )
   }
@@ -45,9 +46,10 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
     authToken: AuthToken,
     user: User
   ) {
+    const desc = 'followers'
     await this.updateCount(
-      'followers',
-      () => this.followService.getFollowerCount(authToken, user),
+      desc,
+      () => this.followService.getCount(authToken, user, desc),
       (count) => this.view.setFollowerCount(count)
     )
   }
@@ -55,7 +57,7 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
   public async updateFollowers(
     user: User,
     authToken: AuthToken,
-    isFollower: boolean
+    isFollowing: boolean
   ) {
     let userToast = ""
 
@@ -63,19 +65,17 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
       async () => {
         this.view.setIsLoading(true)
         userToast = this.view.displayInfoMessage(
-          `${ isFollower ? 'Following' : 'Unfollowing' } ${ user.name }...`,
+          `${ isFollowing ? 'Following' : 'Unfollowing' } ${ user.name }...`,
           0
         )
 
-        const [followerCount, followeeCount] = isFollower
-          ? await this.followService.follow(authToken, user)
-          : await this.followService.unfollow(authToken, user)
+        const [followerCount, followeeCount] = await this.followService.updateFollowing(authToken, user, isFollowing)
 
-        this.view.setIsFollower(isFollower)
+        this.view.setIsFollower(isFollowing)
         this.view.setFollowerCount(followerCount)
         this.view.setFolloweeCount(followeeCount)
       },
-      isFollower ? 'follow user' : 'unfollow user',
+      isFollowing ? 'follow user' : 'unfollow user',
       () => {
         this.view.deleteMessage(userToast)
         this.view.setIsLoading(false)

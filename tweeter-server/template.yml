@@ -97,6 +97,10 @@ Resources:
           #
           # Endpoint definitions
           #
+
+          #
+          # User service
+          #
           /user/get:
             post:
               consumes: *commonConsumes
@@ -124,34 +128,110 @@ Resources:
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
 
+          #
+          # Follow service
+          #
+          /followees/list:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getFolloweesFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /followers/list:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getFollowersFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /followers/status:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getIsFollowerStatusFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /followees/count:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getFolloweeCountFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /followers/count:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getFollowerCountFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /follow:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${followFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /unfollow:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${unfollowFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
             #
             # ADD MORE ENDPOINT DEFINITIONS HERE
             #
 
   #
-  # SQS Queues
-  #
-
-  #   MyQueue:
-  #     Type: AWS::SQS::Queue
-  #     Properties:
-  #       QueueName: MyQueue
-
-  #
-  # Lambda Layer (reused by all Lambda functions)
-  #
-  tweeterLayer:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-      LayerName: tweeterLayer
-      Description: dependencies layer for Tweeter server
-      ContentUri: ./layer/
-      CompatibleRuntimes:
-        - nodejs22.x
-      RetentionPolicy: DELETE
-
-  #
   # Web API Lambda functions
+  #
+
+  #
+  # User Lambdas
   #
   userGetFunction:
     Type: AWS::Serverless::Function
@@ -181,6 +261,108 @@ Resources:
           Properties:
             RestApiId: !Ref tweeterApi
             Path: /user/create
+            Method: POST
+
+  #
+  # Follow Lambdas
+  #
+  getFolloweesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getFolloweesFunction
+      ##### Modify Handler property to match your code.
+      Handler: handlers/FollowHandlers.getFolloweesHandler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /followees/list
+            Method: POST
+  getFollowersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getFollowersFunction
+      ##### Modify Handler property to match your code.
+      Handler: handlers/FollowHandlers.getFollowersHandler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /followers/list
+            Method: POST
+  getIsFollowerStatusFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getIsFollowerStatusFunction
+      ##### Modify Handler property to match your code.
+      Handler: handlers/FollowHandlers.getIsFollowerStatusHandler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /followers/status
+            Method: POST
+  getFolloweeCountFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getFolloweeCountFunction
+      ##### Modify Handler property to match your code.
+      Handler: handlers/FollowHandlers.getFolloweeCountHandler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /followees/count
+            Method: POST
+  getFollowerCountFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getFollowerCountFunction
+      ##### Modify Handler property to match your code.
+      Handler: handlers/FollowHandlers.getFollowerCountHandler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /followers/count
+            Method: POST
+  followFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: followFunction
+      ##### Modify Handler property to match your code.
+      Handler: handlers/FollowHandlers.followHandler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /follow
+            Method: POST
+  unfollowFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: unfollowFunction
+      ##### Modify Handler property to match your code.
+      Handler: handlers/FollowHandlers.unfollowHandler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /unfollow
             Method: POST
 
   #
@@ -235,3 +417,26 @@ Resources:
   #
   # ADD MORE TABLE DEFINITIONS HERE
   #
+
+
+  #
+  # SQS Queues
+  #
+
+  #   MyQueue:
+  #     Type: AWS::SQS::Queue
+  #     Properties:
+  #       QueueName: MyQueue
+
+  #
+  # Lambda Layer (reused by all Lambda functions)
+  #
+  tweeterLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: tweeterLayer
+      Description: dependencies layer for Tweeter server
+      ContentUri: ./layer/
+      CompatibleRuntimes:
+        - nodejs22.x
+      RetentionPolicy: DELETE
