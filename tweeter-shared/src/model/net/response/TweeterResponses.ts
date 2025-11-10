@@ -1,12 +1,9 @@
-import { UserDto } from "../../dto/UserDto";
-import { StatusDto } from "../../dto/StatusDto";
-
 export interface TweeterResponse {
   readonly success: boolean
   readonly message: string | null
 }
 
-export interface PagedItemResponse<T extends UserDto | StatusDto> extends TweeterResponse {
-  readonly items: T[] | null
+export interface PagedItemResponse<DTO_TYPE> extends TweeterResponse {
+  readonly items: DTO_TYPE[] | null
   readonly hasMore: boolean
 }

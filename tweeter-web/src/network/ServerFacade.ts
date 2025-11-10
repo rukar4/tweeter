@@ -6,14 +6,14 @@ import {
   PagedItemRequest,
   PagedItemResponse, RegisterRequest, TweeterRequest, TweeterResponse, UpdateFollowingResponse,
   User,
-  UserDto, UserRequest, AuthenticatedRequest, StatusDto, Status, FollowList, PostStatusRequest,
-} from "tweeter-shared";
-import { ClientCommunicator } from "./ClientCommunicator";
+  UserRequest, AuthenticatedRequest, FollowList, PostStatusRequest,
+} from "tweeter-shared"
+import { ClientCommunicator } from "./ClientCommunicator"
 
 export class ServerFacade {
-  private SERVER_URL = "https://818okq4ej5.execute-api.us-west-2.amazonaws.com/prod";
+  private SERVER_URL = "https://818okq4ej5.execute-api.us-west-2.amazonaws.com/prod"
 
-  private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
+  private clientCommunicator = new ClientCommunicator(this.SERVER_URL)
 
   private async callServer<REQ extends TweeterRequest, RES extends TweeterResponse, RET_TYPE>(
     req: REQ,
@@ -25,14 +25,14 @@ export class ServerFacade {
     if (res.success) {
       return marshal(res)
     } else {
-      console.error(res);
-      throw new Error(res.message ?? undefined);
+      console.error(res)
+      throw new Error(res.message ?? undefined)
     }
   }
 
   public async getDtoList<
-    DTO_TYPE extends UserDto | StatusDto,
-    MODEL_TYPE extends User | Status
+    DTO_TYPE,
+    MODEL_TYPE
   >(
     request: PagedItemRequest<DTO_TYPE>,
     listName: ListType,
@@ -42,12 +42,12 @@ export class ServerFacade {
       const items: MODEL_TYPE[] | null =
         res.items
           ? res.items.map((dto: DTO_TYPE) => modelClass.fromDto(dto) as MODEL_TYPE)
-          : null;
+          : null
 
       if (items == null) {
-        throw new Error(`No ${ listName } found`);
+        throw new Error(`No ${ listName } found`)
       } else {
-        return [items, res.hasMore];
+        return [items, res.hasMore]
       }
     }
 
