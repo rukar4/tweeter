@@ -1,13 +1,17 @@
 import { TweeterRequest } from "./TweeterRequest";
 import { UserDto } from "../../dto/UserDto";
 
-export interface PagedUserItemRequest extends TweeterRequest {
+export interface FollowServiceRequest extends TweeterRequest {
+  readonly token: string
+}
+
+export interface PagedUserItemRequest extends FollowServiceRequest {
   readonly userAlias: string
   readonly pageSize: number
   readonly lastItem: UserDto | null
 }
 
-export interface UserRequest extends TweeterRequest {
+export interface UserRequest extends FollowServiceRequest {
   readonly user: UserDto
 }
 

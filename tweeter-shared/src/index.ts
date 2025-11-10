@@ -12,12 +12,16 @@ export { AuthToken } from "./model/domain/AuthToken";
 // DTOs
 //
 export type { UserDto } from "./model/dto/UserDto";
+export type { AuthTokenDto } from "./model/dto/AuthTokenDto"
 
 //
 // Requests
 //
 export type { TweeterRequest } from "./model/net/request/TweeterRequest";
-export type { PagedUserItemRequest, UserRequest, IsFollowerRequest } from "./model/net/request/FollowRequests";
+export type {
+  LoginRequest, RegisterRequest, GetUserRequest, UserServiceRequest
+} from "./model/net/request/UserServiceRequests"
+export type { PagedUserItemRequest, UserRequest, IsFollowerRequest } from "./model/net/request/FollowServiceRequests";
 
 //
 // Responses
@@ -25,7 +29,8 @@ export type { PagedUserItemRequest, UserRequest, IsFollowerRequest } from "./mod
 export type { TweeterResponse } from "./model/net/response/TweeterResponse"
 export type {
   PagedUserItemResponse, IsFollowerResponse, UpdateFollowingResponse, GetCountResponse
-} from "./model/net/response/FollowResponses"
+} from "./model/net/response/FollowServiceResponses"
+export type { GetUserResponse, LoginResponse } from "./model/net/response/UserServiceResponses"
 
 // Other
 export type ListType = 'followees' | 'followers'
