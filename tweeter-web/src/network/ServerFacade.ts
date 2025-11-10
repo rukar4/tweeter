@@ -1,11 +1,12 @@
 import {
-  GetCountResponse,
+  AuthToken,
+  GetCountResponse, GetUserRequest, GetUserResponse,
   IsFollowerRequest, IsFollowerResponse,
-  ListType,
+  ListType, LoginRequest, LoginResponse,
   PagedUserItemRequest,
-  PagedUserItemResponse, UpdateFollowingResponse,
+  PagedUserItemResponse, RegisterRequest, TweeterRequest, TweeterResponse, UpdateFollowingResponse,
   User,
-  UserDto, UserRequest,
+  UserDto, UserRequest, UserServiceRequest,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
@@ -14,83 +15,98 @@ export class ServerFacade {
 
   private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
-  public async getUserDtos(request: PagedUserItemRequest, listName: ListType): Promise<[User[], boolean]> {
-    const response = await this.clientCommunicator.doPost<
-      PagedUserItemRequest,
-      PagedUserItemResponse
-    >(request, `/${listName}/list`);
+  private async callServer<REQ extends TweeterRequest, RES extends TweeterResponse, RET_TYPE>(
+    req: REQ,
+    path: string,
+    marshal: (res: RES) => RET_TYPE
+  ): Promise<RET_TYPE> {
+    const res: RES = await this.clientCommunicator.doPost<REQ, RES>(req, path)
 
-    // Convert the UserDto array returned by ClientCommunicator to a User array
-    const items: User[] | null =
-      response.success && response.items
-        ? response.items.map((dto: UserDto) => User.fromDto(dto) as User)
-        : null;
-
-    // Handle errors
-    if (response.success) {
-      if (items == null) {
-        throw new Error(`No ${listName} found`);
-      } else {
-        return [items, response.hasMore];
-      }
+    if (res.success) {
+      return marshal(res)
     } else {
-      console.error(response);
-      throw new Error(response.message ?? undefined);
+      console.error(res);
+      throw new Error(res.message ?? undefined);
     }
   }
 
-  public async getIsFollowerStatus(req: IsFollowerRequest): Promise<boolean> {
-    const res = await this.clientCommunicator.doPost<
-      IsFollowerRequest,
-      IsFollowerResponse
-    >(req, '/followers/status')
+  public async getUserDtos(request: PagedUserItemRequest, listName: ListType): Promise<[User[], boolean]> {
+    const marshal = (res: PagedUserItemResponse): [User[], boolean] => {
+      const items: User[] | null =
+        res.items
+          ? res.items.map((dto: UserDto) => User.fromDto(dto) as User)
+          : null;
 
-    if (res.success) {
+      if (items == null) {
+        throw new Error(`No ${ listName } found`);
+      } else {
+        return [items, res.hasMore];
+      }
+    }
+
+    return this.callServer(request, `/${ listName }/list`, marshal)
+  }
+
+  public async getIsFollowerStatus(req: IsFollowerRequest): Promise<boolean> {
+    const marshal = (res: IsFollowerResponse) => {
       const isFollower = res.isFollower ?? null
       if (isFollower === null) {
         throw new Error('No status found in response')
       } else {
         return isFollower
       }
-    } else {
-      console.error(res);
-      throw new Error(res.message ?? undefined);
     }
+
+    return this.callServer(req, '/followers/status', marshal)
   }
 
   public async getCount(req: UserRequest, listType: ListType): Promise<number> {
-    const res = await this.clientCommunicator.doPost<
-      UserRequest,
-      GetCountResponse
-    >(req, `/${listType}/count`)
-
-    if (res.success) {
+    const marshal = (res: GetCountResponse) => {
       const count = res.count ?? null
       if (count === null) {
         throw new Error('No count in response')
       } else {
         return count
       }
-    } else {
-      console.error(res);
-      throw new Error(res.message ?? undefined);
     }
+
+    return this.callServer(req, `/${ listType }/count`, marshal)
   }
 
   public async updateFollowing(
     req: UserRequest,
     isFollowing: boolean
   ): Promise<[followerCount: number, followeeCount: number]> {
-    const res = await this.clientCommunicator.doPost<
-      UserRequest,
-      UpdateFollowingResponse
-    >(req, isFollowing ? '/follow' : '/unfollow')
-
-    if (res.success && res.followerCount && res.followeeCount) {
+    const marshal = (res: UpdateFollowingResponse):[followerCount: number, followeeCount: number] => {
       return [res.followerCount, res.followeeCount]
-    } else {
-      console.error(res);
-      throw new Error(res.message ?? undefined);
     }
+
+    return this.callServer(req, isFollowing ? '/follow' : '/unfollow', marshal)
+  }
+
+  public async getUser(req: GetUserRequest): Promise<User | null> {
+    const marshal = (res: GetUserResponse) => {
+      return User.fromDto(res.user)
+    }
+
+    return this.callServer(req, '/user/get', marshal)
+  }
+
+  public async login(req: LoginRequest | RegisterRequest, pathExt: 'login' | 'register'): Promise<[User, AuthToken]> {
+    const marshal = (res: LoginResponse): [User, AuthToken] => {
+      const user = User.fromDto(res.user)
+      const authToken = AuthToken.fromDto(res.token)
+
+      if (!user) throw Error('Response is missing user DTO')
+      if (!authToken) throw Error('Response is missing authentication token DTO')
+      return [user, authToken]
+    }
+
+    return this.callServer(req, `/user/${ pathExt }`, marshal)
+  }
+
+  public async logout(req: UserServiceRequest): Promise<void> {
+    const marshal = (req: TweeterResponse) => {}
+    return await this.callServer(req, '/user/logout', marshal)
   }
 }

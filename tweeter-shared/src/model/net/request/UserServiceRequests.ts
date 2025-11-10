@@ -16,6 +16,6 @@ export interface LoginRequest extends TweeterRequest {
 export interface RegisterRequest extends LoginRequest {
   readonly firstName: string
   readonly lastName: string
-  readonly userImageBytes: Uint8Array
+  readonly imageStringBase64: string
   readonly imageFileExtension: string
 }
