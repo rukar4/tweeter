@@ -110,11 +110,12 @@ Resources:
                 httpMethod: POST
                 uri:
                   ##### Change "userGetFunction" to the actual function name.
-                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${userGetFunction.Arn}/invocations
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getUserFunction.Arn}/invocations
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
-          /user/create:
+
+          /user/login:
             post:
               consumes: *commonConsumes
               produces: *commonProduces
@@ -123,7 +124,35 @@ Resources:
                 httpMethod: POST
                 uri:
                   ##### Change "userCreateFunction" to the actual function name.
-                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${userCreateFunction.Arn}/invocations
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${loginFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /user/register:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### Change "userCreateFunction" to the actual function name.
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${registerFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /user/logout:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### Change "userCreateFunction" to the actual function name.
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${logoutFunction.Arn}/invocations
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
@@ -233,12 +262,12 @@ Resources:
   #
   # User Lambdas
   #
-  userGetFunction:
+  getUserFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: userGetFunction
+      FunctionName: getUserFunction
       ##### Modify Handler property to match your code.
-      Handler: handlers/users/UserGetHandler.userGetHandler
+      Handler: handlers/UserServiceHandlers.getUserHandler
       Policies: *commonPolicies
       Events:
         PostApi:
@@ -248,19 +277,49 @@ Resources:
             Path: /user/get
             Method: POST
 
-  userCreateFunction:
+  loginFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: userCreateFunction
+      FunctionName: loginFunction
       ##### Modify Handler property to match your code.
-      Handler: handlers/users/UserCreateHandler.userCreateHandler
+      Handler: handlers/UserServiceHandlers.loginHandler
       Policies: *commonPolicies
       Events:
         PostApi:
           Type: Api
           Properties:
             RestApiId: !Ref tweeterApi
-            Path: /user/create
+            Path: /user/login
+            Method: POST
+
+  registerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: registerFunction
+      ##### Modify Handler property to match your code.
+      Handler: handlers/UserServiceHandlers.registerHandler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /user/register
+            Method: POST
+
+  logoutFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: logoutFunction
+      ##### Modify Handler property to match your code.
+      Handler: handlers/UserServiceHandlers.logoutHandler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /user/logout
             Method: POST
 
   #
@@ -271,7 +330,7 @@ Resources:
     Properties:
       FunctionName: getFolloweesFunction
       ##### Modify Handler property to match your code.
-      Handler: handlers/FollowHandlers.getFolloweesHandler
+      Handler: handlers/FollowServiceHandlers.getFolloweesHandler
       Policies: *commonPolicies
       Events:
         PostApi:
@@ -286,7 +345,7 @@ Resources:
     Properties:
       FunctionName: getFollowersFunction
       ##### Modify Handler property to match your code.
-      Handler: handlers/FollowHandlers.getFollowersHandler
+      Handler: handlers/FollowServiceHandlers.getFollowersHandler
       Policies: *commonPolicies
       Events:
         PostApi:
@@ -301,7 +360,7 @@ Resources:
     Properties:
       FunctionName: getIsFollowerStatusFunction
       ##### Modify Handler property to match your code.
-      Handler: handlers/FollowHandlers.getIsFollowerStatusHandler
+      Handler: handlers/FollowServiceHandlers.getIsFollowerStatusHandler
       Policies: *commonPolicies
       Events:
         PostApi:
@@ -316,7 +375,7 @@ Resources:
     Properties:
       FunctionName: getFolloweeCountFunction
       ##### Modify Handler property to match your code.
-      Handler: handlers/FollowHandlers.getFolloweeCountHandler
+      Handler: handlers/FollowServiceHandlers.getFolloweeCountHandler
       Policies: *commonPolicies
       Events:
         PostApi:
@@ -331,7 +390,7 @@ Resources:
     Properties:
       FunctionName: getFollowerCountFunction
       ##### Modify Handler property to match your code.
-      Handler: handlers/FollowHandlers.getFollowerCountHandler
+      Handler: handlers/FollowServiceHandlers.getFollowerCountHandler
       Policies: *commonPolicies
       Events:
         PostApi:
@@ -346,7 +405,7 @@ Resources:
     Properties:
       FunctionName: followFunction
       ##### Modify Handler property to match your code.
-      Handler: handlers/FollowHandlers.followHandler
+      Handler: handlers/FollowServiceHandlers.followHandler
       Policies: *commonPolicies
       Events:
         PostApi:
@@ -361,7 +420,7 @@ Resources:
     Properties:
       FunctionName: unfollowFunction
       ##### Modify Handler property to match your code.
-      Handler: handlers/FollowHandlers.unfollowHandler
+      Handler: handlers/FollowServiceHandlers.unfollowHandler
       Policies: *commonPolicies
       Events:
         PostApi:

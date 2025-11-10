@@ -13,35 +13,11 @@ import { FollowService } from "../model/service/FollowService";
 const followService = new FollowService()
 
 export const getFolloweesHandler = async (req: PagedUserItemRequest): Promise<PagedUserItemResponse> => {
-  const [items, hasMore] = await followService.loadMoreFollowees(req.token, req.userAlias, req.pageSize, req.lastItem)
-
-  return {
-    success: true,
-    message: null,
-    items,
-    hasMore
-  }
+  return getUserList(req, followService.loadMoreFollowees.bind(followService))
 }
 
 export const getFollowersHandler = async (req: PagedUserItemRequest): Promise<PagedUserItemResponse> => {
-  const [items, hasMore] = await followService.loadMoreFollowers(req.token, req.userAlias, req.pageSize, req.lastItem)
-
-  return {
-    success: true,
-    message: null,
-    items,
-    hasMore
-  }
-}
-
-export async function getIsFollowerStatusHandler(req: IsFollowerRequest): Promise<IsFollowerResponse> {
-  const isFollower = await followService.getIsFollowerStatus(req.token, req.user, req.selectedUser)
-
-  return {
-    success: true,
-    message: null,
-    isFollower
-  }
+  return getUserList(req, followService.loadMoreFollowers.bind(followService))
 }
 
 export async function getFolloweeCountHandler(req: UserRequest): Promise<GetCountResponse> {
@@ -58,6 +34,35 @@ export function followHandler(req: UserRequest): Promise<UpdateFollowingResponse
 
 export function unfollowHandler(req: UserRequest): Promise<UpdateFollowingResponse> {
   return updateFollowingCounts(req, followService.unfollow.bind(followService))
+}
+
+export async function getIsFollowerStatusHandler(req: IsFollowerRequest): Promise<IsFollowerResponse> {
+  const isFollower = await followService.getIsFollowerStatus(req.token, req.user, req.selectedUser)
+
+  return {
+    success: true,
+    message: null,
+    isFollower
+  }
+}
+
+async function getUserList(
+  req: PagedUserItemRequest,
+  serviceCall: (
+    token: string,
+    userAlias: string,
+    pageSize: number,
+    lastItem: UserDto | null
+  ) => Promise<[UserDto[], boolean]>
+): Promise<PagedUserItemResponse> {
+  const [items, hasMore] = await serviceCall(req.token, req.userAlias, req.pageSize, req.lastItem)
+
+  return {
+    success: true,
+    message: null,
+    items,
+    hasMore
+  }
 }
 
 async function getCount(
