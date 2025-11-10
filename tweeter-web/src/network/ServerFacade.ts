@@ -3,7 +3,7 @@ import {
   IsFollowerRequest, IsFollowerResponse,
   ListType,
   PagedUserItemRequest,
-  PagedUserItemResponse,
+  PagedUserItemResponse, UpdateFollowingResponse,
   User,
   UserDto, UserRequest,
 } from "tweeter-shared";
@@ -71,6 +71,23 @@ export class ServerFacade {
       } else {
         return count
       }
+    } else {
+      console.error(res);
+      throw new Error(res.message ?? undefined);
+    }
+  }
+
+  public async updateFollowing(
+    req: UserRequest,
+    isFollowing: boolean
+  ): Promise<[followerCount: number, followeeCount: number]> {
+    const res = await this.clientCommunicator.doPost<
+      UserRequest,
+      UpdateFollowingResponse
+    >(req, isFollowing ? '/follow' : '/unfollow')
+
+    if (res.success && res.followerCount && res.followeeCount) {
+      return [res.followerCount, res.followeeCount]
     } else {
       console.error(res);
       throw new Error(res.message ?? undefined);

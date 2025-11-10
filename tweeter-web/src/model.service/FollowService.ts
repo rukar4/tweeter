@@ -48,16 +48,15 @@ export class FollowService extends Service {
 
   public async updateFollowing(
     authToken: AuthToken,
-    userToUpdate: User,
+    user: User,
     isFollowing: boolean
   ): Promise<[followerCount: number, followeeCount: number]> {
-    await new Promise((f) => setTimeout(f, 2000))
-
-    // TODO: Call the server facade based on follow
-
-    const followerCount = await this.getCount(authToken, userToUpdate, "followers")
-    const followeeCount = await this.getCount(authToken, userToUpdate, "followees")
-
-    return [followerCount, followeeCount]
+    return this.serverFacade.updateFollowing(
+      {
+        token: authToken.token,
+        user: user.dto
+      },
+      isFollowing
+    )
   }
 }

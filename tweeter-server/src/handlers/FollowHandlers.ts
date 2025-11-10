@@ -4,12 +4,15 @@ import {
   IsFollowerResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  UpdateFollowingResponse,
+  UserDto,
   UserRequest
 } from "tweeter-shared";
 import { FollowService } from "../model/service/FollowService";
 
+const followService = new FollowService()
+
 export const getFolloweesHandler = async (req: PagedUserItemRequest): Promise<PagedUserItemResponse> => {
-  const followService = new FollowService()
   const [items, hasMore] = await followService.loadMoreFollowees(req.token, req.userAlias, req.pageSize, req.lastItem)
 
   return {
@@ -21,7 +24,6 @@ export const getFolloweesHandler = async (req: PagedUserItemRequest): Promise<Pa
 }
 
 export const getFollowersHandler = async (req: PagedUserItemRequest): Promise<PagedUserItemResponse> => {
-  const followService = new FollowService()
   const [items, hasMore] = await followService.loadMoreFollowers(req.token, req.userAlias, req.pageSize, req.lastItem)
 
   return {
@@ -33,7 +35,6 @@ export const getFollowersHandler = async (req: PagedUserItemRequest): Promise<Pa
 }
 
 export async function getIsFollowerStatusHandler(req: IsFollowerRequest): Promise<IsFollowerResponse> {
-  const followService = new FollowService()
   const isFollower = await followService.getIsFollowerStatus(req.token, req.user, req.selectedUser)
 
   return {
@@ -44,19 +45,26 @@ export async function getIsFollowerStatusHandler(req: IsFollowerRequest): Promis
 }
 
 export async function getFolloweeCountHandler(req: UserRequest): Promise<GetCountResponse> {
-  const followService = new FollowService()
-  const count  = await followService.getFolloweeCount(req.token, req.user)
-
-  return {
-    success: true,
-    message: null,
-    count: count
-  }
+  return getCount(req, followService.getFolloweeCount.bind(followService))
 }
 
 export async function getFollowerCountHandler(req: UserRequest) {
-  const followService = new FollowService()
-  const count  = await followService.getFollowerCount(req.token, req.user)
+  return getCount(req, followService.getFollowerCount.bind(followService))
+}
+
+export function followHandler(req: UserRequest): Promise<UpdateFollowingResponse> {
+  return updateFollowingCounts(req, followService.follow.bind(followService))
+}
+
+export function unfollowHandler(req: UserRequest): Promise<UpdateFollowingResponse> {
+  return updateFollowingCounts(req, followService.unfollow.bind(followService))
+}
+
+async function getCount(
+  req: UserRequest,
+  serviceCall: (token: string, user: UserDto) => Promise<number>
+): Promise<GetCountResponse> {
+  const count = await serviceCall(req.token, req.user)
 
   return {
     success: true,
@@ -65,10 +73,16 @@ export async function getFollowerCountHandler(req: UserRequest) {
   }
 }
 
-export function followHandler(req: UserRequest) {
+async function updateFollowingCounts(
+  req: UserRequest,
+  serviceCall: (token: string, user: UserDto) => Promise<[number, number]>
+): Promise<UpdateFollowingResponse> {
+  const [followerCount, followeeCount] = await serviceCall(req.token, req.user)
 
-}
-
-export function unfollowHandler(req: UserRequest) {
-
+  return {
+    success: true,
+    message: null,
+    followerCount,
+    followeeCount
+  }
 }
