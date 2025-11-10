@@ -12,23 +12,24 @@ export { AuthToken } from "./model/domain/AuthToken";
 // DTOs
 //
 export type { UserDto } from "./model/dto/UserDto";
+export type { StatusDto } from "./model/dto/StatusDto";
 export type { AuthTokenDto } from "./model/dto/AuthTokenDto"
 
 //
 // Requests
 //
-export type { TweeterRequest } from "./model/net/request/TweeterRequest";
+export type { TweeterRequest, PagedItemRequest, AuthenticatedRequest } from "./model/net/request/TweeterRequests";
 export type {
-  LoginRequest, RegisterRequest, GetUserRequest, UserServiceRequest
+  LoginRequest, RegisterRequest, GetUserRequest
 } from "./model/net/request/UserServiceRequests"
-export type { PagedUserItemRequest, UserRequest, IsFollowerRequest } from "./model/net/request/FollowServiceRequests";
+export type { UserRequest, IsFollowerRequest } from "./model/net/request/FollowServiceRequests";
 
 //
 // Responses
 //
-export type { TweeterResponse } from "./model/net/response/TweeterResponse"
+export type { TweeterResponse, PagedItemResponse } from "./model/net/response/TweeterResponses"
 export type {
-  PagedUserItemResponse, IsFollowerResponse, UpdateFollowingResponse, GetCountResponse
+  IsFollowerResponse, UpdateFollowingResponse, GetCountResponse
 } from "./model/net/response/FollowServiceResponses"
 export type { GetUserResponse, LoginResponse } from "./model/net/response/UserServiceResponses"
 

@@ -1,4 +1,4 @@
-import { TweeterResponse } from "./TweeterResponse";
+import { TweeterResponse } from "./TweeterResponses";
 import { UserDto } from "../../dto/UserDto";
 import { AuthTokenDto } from "../../dto/AuthTokenDto";
 

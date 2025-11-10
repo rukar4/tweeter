@@ -3,10 +3,10 @@ import {
   GetCountResponse, GetUserRequest, GetUserResponse,
   IsFollowerRequest, IsFollowerResponse,
   ListType, LoginRequest, LoginResponse,
-  PagedUserItemRequest,
-  PagedUserItemResponse, RegisterRequest, TweeterRequest, TweeterResponse, UpdateFollowingResponse,
+  PagedItemRequest,
+  PagedItemResponse, RegisterRequest, TweeterRequest, TweeterResponse, UpdateFollowingResponse,
   User,
-  UserDto, UserRequest, UserServiceRequest,
+  UserDto, UserRequest, AuthenticatedRequest,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
@@ -30,8 +30,8 @@ export class ServerFacade {
     }
   }
 
-  public async getUserDtos(request: PagedUserItemRequest, listName: ListType): Promise<[User[], boolean]> {
-    const marshal = (res: PagedUserItemResponse): [User[], boolean] => {
+  public async getUserDtos(request: PagedItemRequest<UserDto>, listName: ListType): Promise<[User[], boolean]> {
+    const marshal = (res: PagedItemResponse<UserDto>): [User[], boolean] => {
       const items: User[] | null =
         res.items
           ? res.items.map((dto: UserDto) => User.fromDto(dto) as User)
@@ -105,7 +105,7 @@ export class ServerFacade {
     return this.callServer(req, `/user/${ pathExt }`, marshal)
   }
 
-  public async logout(req: UserServiceRequest): Promise<void> {
+  public async logout(req: AuthenticatedRequest): Promise<void> {
     const marshal = (req: TweeterResponse) => {}
     return await this.callServer(req, '/user/logout', marshal)
   }

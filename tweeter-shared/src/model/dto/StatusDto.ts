@@ -1,0 +1,16 @@
+import { UserDto } from "./UserDto";
+import { PostSegment, Type } from "../domain/PostSegment";
+
+export interface StatusDto {
+  readonly post: string
+  readonly user: UserDto
+  readonly timestamp: number
+  readonly segments: PostSegmentDto[]
+}
+
+export interface PostSegmentDto {
+  readonly text: string
+  readonly startPosition: number
+  readonly endPosition: number
+  readonly type: Type
+}

@@ -4,7 +4,7 @@ import {
   LoginRequest,
   LoginResponse,
   RegisterRequest,
-  UserServiceRequest
+  AuthenticatedRequest
 } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 
@@ -51,7 +51,7 @@ export async function registerHandler(req: RegisterRequest): Promise<LoginRespon
   }
 }
 
-export async function logoutHandler(req: UserServiceRequest) {
+export async function logoutHandler(req: AuthenticatedRequest) {
   await userService.logout(req.token)
 
   return {

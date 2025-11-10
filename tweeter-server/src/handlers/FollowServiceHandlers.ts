@@ -2,8 +2,8 @@ import {
   GetCountResponse,
   IsFollowerRequest,
   IsFollowerResponse,
-  PagedUserItemRequest,
-  PagedUserItemResponse,
+  PagedItemRequest,
+  PagedItemResponse,
   UpdateFollowingResponse,
   UserDto,
   UserRequest
@@ -11,6 +11,9 @@ import {
 import { FollowService } from "../model/service/FollowService";
 
 const followService = new FollowService()
+
+interface PagedUserItemRequest extends PagedItemRequest<UserDto> {}
+interface PagedUserItemResponse extends PagedItemResponse<UserDto> {}
 
 export const getFolloweesHandler = async (req: PagedUserItemRequest): Promise<PagedUserItemResponse> => {
   return getUserList(req, followService.loadMoreFollowees.bind(followService))
