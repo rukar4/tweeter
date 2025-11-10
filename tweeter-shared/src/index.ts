@@ -2,27 +2,28 @@
 // uploading to lambda. Instead we have to list each export.
 
 // Domain classes
-export { Follow } from "./model/domain/Follow";
-export { PostSegment, Type } from "./model/domain/PostSegment";
-export { Status } from "./model/domain/Status";
-export { User } from "./model/domain/User";
-export { AuthToken } from "./model/domain/AuthToken";
+export { Follow } from "./model/domain/Follow"
+export { PostSegment, Type } from "./model/domain/PostSegment"
+export { Status } from "./model/domain/Status"
+export { User } from "./model/domain/User"
+export { AuthToken } from "./model/domain/AuthToken"
 
 //
 // DTOs
 //
-export type { UserDto } from "./model/dto/UserDto";
-export type { StatusDto } from "./model/dto/StatusDto";
+export type { UserDto } from "./model/dto/UserDto"
+export type { StatusDto } from "./model/dto/StatusDto"
 export type { AuthTokenDto } from "./model/dto/AuthTokenDto"
 
 //
 // Requests
 //
-export type { TweeterRequest, PagedItemRequest, AuthenticatedRequest } from "./model/net/request/TweeterRequests";
+export type { TweeterRequest, PagedItemRequest, AuthenticatedRequest } from "./model/net/request/TweeterRequests"
 export type {
   LoginRequest, RegisterRequest, GetUserRequest
 } from "./model/net/request/UserServiceRequests"
-export type { UserRequest, IsFollowerRequest } from "./model/net/request/FollowServiceRequests";
+export type { UserRequest, IsFollowerRequest } from "./model/net/request/FollowServiceRequests"
+export type { PostStatusRequest } from "./model/net/request/StatusServiceRequests"
 
 //
 // Responses
@@ -34,6 +35,8 @@ export type {
 export type { GetUserResponse, LoginResponse } from "./model/net/response/UserServiceResponses"
 
 // Other
-export type ListType = 'followees' | 'followers'
-export { FakeData } from "./util/FakeData";
+export type FollowList = 'followees' | 'followers'
+export type StatusList = 'story' | 'feed'
+export type ListType = FollowList | StatusList
+export { FakeData } from "./util/FakeData"
 

@@ -9,6 +9,7 @@ import {
   UserRequest
 } from "tweeter-shared";
 import { FollowService } from "../model/service/FollowService";
+import { getList } from "../util";
 
 const followService = new FollowService()
 
@@ -16,11 +17,11 @@ interface PagedUserItemRequest extends PagedItemRequest<UserDto> {}
 interface PagedUserItemResponse extends PagedItemResponse<UserDto> {}
 
 export const getFolloweesHandler = async (req: PagedUserItemRequest): Promise<PagedUserItemResponse> => {
-  return getUserList(req, followService.loadMoreFollowees.bind(followService))
+  return getList(req, followService.loadMoreFollowees.bind(followService))
 }
 
 export const getFollowersHandler = async (req: PagedUserItemRequest): Promise<PagedUserItemResponse> => {
-  return getUserList(req, followService.loadMoreFollowers.bind(followService))
+  return getList(req, followService.loadMoreFollowers.bind(followService))
 }
 
 export async function getFolloweeCountHandler(req: UserRequest): Promise<GetCountResponse> {
@@ -46,25 +47,6 @@ export async function getIsFollowerStatusHandler(req: IsFollowerRequest): Promis
     success: true,
     message: null,
     isFollower
-  }
-}
-
-async function getUserList(
-  req: PagedUserItemRequest,
-  serviceCall: (
-    token: string,
-    userAlias: string,
-    pageSize: number,
-    lastItem: UserDto | null
-  ) => Promise<[UserDto[], boolean]>
-): Promise<PagedUserItemResponse> {
-  const [items, hasMore] = await serviceCall(req.token, req.userAlias, req.pageSize, req.lastItem)
-
-  return {
-    success: true,
-    message: null,
-    items,
-    hasMore
   }
 }
 

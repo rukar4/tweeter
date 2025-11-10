@@ -251,9 +251,47 @@ Resources:
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
 
-            #
-            # ADD MORE ENDPOINT DEFINITIONS HERE
-            #
+          #
+          # Status service
+          #
+          /story/list:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getStoryItemsFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /feed/list:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getFeedItemsFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /status/post:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${postStatusFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
 
   #
   # Web API Lambda functions
@@ -431,8 +469,52 @@ Resources:
             Method: POST
 
   #
-  # ADD MORE WEB API LAMBDA DEFINITIONS HERE
+  # Status Lambdas
   #
+  getStoryItemsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getStoryItemsFunction
+      ##### Modify Handler property to match your code.
+      Handler: handlers/StatusServiceHandlers.getStoryItemsHandler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /story/list
+            Method: POST
+
+  getFeedItemsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getFeedItemsFunction
+      ##### Modify Handler property to match your code.
+      Handler: handlers/StatusServiceHandlers.getFeedItemsHandler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /feed/list
+            Method: POST
+
+  postStatusFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: postStatusFunction
+      ##### Modify Handler property to match your code.
+      Handler: handlers/StatusServiceHandlers.postStatusHandler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /status/post
+            Method: POST
 
   #
   # SQS Queue Lambda Functions

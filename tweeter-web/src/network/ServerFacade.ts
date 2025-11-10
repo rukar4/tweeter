@@ -6,7 +6,7 @@ import {
   PagedItemRequest,
   PagedItemResponse, RegisterRequest, TweeterRequest, TweeterResponse, UpdateFollowingResponse,
   User,
-  UserDto, UserRequest, AuthenticatedRequest,
+  UserDto, UserRequest, AuthenticatedRequest, StatusDto, Status, FollowList, PostStatusRequest,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
@@ -30,11 +30,18 @@ export class ServerFacade {
     }
   }
 
-  public async getUserDtos(request: PagedItemRequest<UserDto>, listName: ListType): Promise<[User[], boolean]> {
-    const marshal = (res: PagedItemResponse<UserDto>): [User[], boolean] => {
-      const items: User[] | null =
+  public async getDtoList<
+    DTO_TYPE extends UserDto | StatusDto,
+    MODEL_TYPE extends User | Status
+  >(
+    request: PagedItemRequest<DTO_TYPE>,
+    listName: ListType,
+    modelClass: { fromDto(dto: DTO_TYPE): MODEL_TYPE | null }
+  ): Promise<[MODEL_TYPE[],boolean]> {
+    const marshal = (res: PagedItemResponse<DTO_TYPE>): [MODEL_TYPE[], boolean] => {
+      const items: MODEL_TYPE[] | null =
         res.items
-          ? res.items.map((dto: UserDto) => User.fromDto(dto) as User)
+          ? res.items.map((dto: DTO_TYPE) => modelClass.fromDto(dto) as MODEL_TYPE)
           : null;
 
       if (items == null) {
@@ -60,7 +67,7 @@ export class ServerFacade {
     return this.callServer(req, '/followers/status', marshal)
   }
 
-  public async getCount(req: UserRequest, listType: ListType): Promise<number> {
+  public async getCount(req: UserRequest, listType: FollowList): Promise<number> {
     const marshal = (res: GetCountResponse) => {
       const count = res.count ?? null
       if (count === null) {
@@ -108,5 +115,10 @@ export class ServerFacade {
   public async logout(req: AuthenticatedRequest): Promise<void> {
     const marshal = (req: TweeterResponse) => {}
     return await this.callServer(req, '/user/logout', marshal)
+  }
+
+  public async postStatus(req: PostStatusRequest): Promise<void> {
+    const marshal = (req: TweeterResponse) => {}
+    return await this.callServer(req, '/status/post', marshal)
   }
 }

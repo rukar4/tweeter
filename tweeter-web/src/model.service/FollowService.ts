@@ -1,4 +1,4 @@
-import { AuthToken, FakeData, User, ListType } from "tweeter-shared"
+import { AuthToken, User, UserDto, FollowList } from "tweeter-shared"
 import { Service } from "./Service"
 
 
@@ -8,16 +8,17 @@ export class FollowService extends Service {
     userAlias: string,
     pageSize: number,
     lastItem: User | null,
-    listType: ListType
+    listType: FollowList
   ): Promise<[User[], boolean]> {
-    return this.serverFacade.getUserDtos(
+    return this.serverFacade.getDtoList<UserDto, User>(
       {
         token: authToken.token,
         userAlias,
         pageSize,
         lastItem: lastItem?.dto ?? null
       },
-      listType
+      listType,
+      User
     )
   }
 
@@ -36,13 +37,13 @@ export class FollowService extends Service {
   public async getCount(
     authToken: AuthToken,
     user: User,
-    itemsDesc: ListType
+    listDesc: FollowList
   ): Promise<number> {
     return this.serverFacade.getCount({
         token: authToken.token,
         user: user.dto
       },
-      itemsDesc
+      listDesc
     )
   }
 

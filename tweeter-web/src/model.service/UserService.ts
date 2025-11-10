@@ -1,4 +1,4 @@
-import { AuthToken, FakeData, User } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared";
 import { Service } from "./Service";
 import { Buffer } from "buffer";
 
