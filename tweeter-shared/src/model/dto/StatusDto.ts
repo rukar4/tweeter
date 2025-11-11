@@ -1,5 +1,5 @@
 import { UserDto } from "./UserDto";
-import { PostSegment, Type } from "../domain/PostSegment";
+import { Type } from "../domain/PostSegment";
 
 export interface StatusDto {
   readonly post: string

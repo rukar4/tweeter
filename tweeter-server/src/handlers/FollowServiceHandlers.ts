@@ -9,7 +9,7 @@ import {
   UserRequest
 } from "tweeter-shared";
 import { FollowService } from "../model/service/FollowService";
-import { getList } from "../util";
+import { authenticate, getList } from "../util";
 
 const followService = new FollowService()
 
@@ -41,6 +41,7 @@ export function unfollowHandler(req: UserRequest): Promise<UpdateFollowingRespon
 }
 
 export async function getIsFollowerStatusHandler(req: IsFollowerRequest): Promise<IsFollowerResponse> {
+  await authenticate(req)
   const isFollower = await followService.getIsFollowerStatus(req.token, req.user, req.selectedUser)
 
   return {
@@ -54,6 +55,7 @@ async function getCount(
   req: UserRequest,
   serviceCall: (token: string, user: UserDto) => Promise<number>
 ): Promise<GetCountResponse> {
+  await authenticate(req)
   const count = await serviceCall(req.token, req.user)
 
   return {
@@ -67,6 +69,7 @@ async function updateFollowingCounts(
   req: UserRequest,
   serviceCall: (token: string, user: UserDto) => Promise<[number, number]>
 ): Promise<UpdateFollowingResponse> {
+  await authenticate(req)
   const [followerCount, followeeCount] = await serviceCall(req.token, req.user)
 
   return {

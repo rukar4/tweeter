@@ -1,5 +1,5 @@
 import { PagedItemRequest, StatusDto, PostStatusRequest, TweeterResponse } from "tweeter-shared";
-import { getList } from "../util";
+import { authenticate, getList } from "../util";
 import { StatusService } from "../model/service/StatusService";
 
 interface PagedStatusItemRequest extends PagedItemRequest<StatusDto> {}
@@ -15,6 +15,7 @@ export async function getFeedItemsHandler(req: PagedStatusItemRequest) {
 }
 
 export async function postStatusHandler(req: PostStatusRequest): Promise<TweeterResponse> {
+  await authenticate(req)
   await statusService.postStatus(req.token, req.newStatus)
 
   return {

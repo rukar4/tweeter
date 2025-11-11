@@ -55,6 +55,8 @@ Resources:
         info:
           title: "Tweeter API"
           version: "1.0"
+          description: "Tweeter API definitions, modelled after Twitter, to allow users to follow, unfollow, 
+            post statuses, and view others' statuses."
         x-common-consumes: &commonConsumes
           - application/json
         x-common-produces: &commonProduces
@@ -95,21 +97,17 @@ Resources:
             headers: *commonSwaggerResponseHeaders
         paths:
           #
-          # Endpoint definitions
-          #
-
-          #
           # User service
           #
           /user/get:
             post:
+              description: "Retrieve user information by alias."
               consumes: *commonConsumes
               produces: *commonProduces
               x-amazon-apigateway-integration:
                 type: aws
                 httpMethod: POST
                 uri:
-                  ##### Change "userGetFunction" to the actual function name.
                   Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getUserFunction.Arn}/invocations
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
@@ -117,13 +115,13 @@ Resources:
 
           /user/login:
             post:
+              description: "Authenticate an existing user and return a session token."
               consumes: *commonConsumes
               produces: *commonProduces
               x-amazon-apigateway-integration:
                 type: aws
                 httpMethod: POST
                 uri:
-                  ##### Change "userCreateFunction" to the actual function name.
                   Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${loginFunction.Arn}/invocations
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
@@ -131,13 +129,13 @@ Resources:
 
           /user/register:
             post:
+              description: "Register a new user account with Tweeter and return authentication token."
               consumes: *commonConsumes
               produces: *commonProduces
               x-amazon-apigateway-integration:
                 type: aws
                 httpMethod: POST
                 uri:
-                  ##### Change "userCreateFunction" to the actual function name.
                   Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${registerFunction.Arn}/invocations
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
@@ -145,13 +143,13 @@ Resources:
 
           /user/logout:
             post:
+              description: "Log out the current user."
               consumes: *commonConsumes
               produces: *commonProduces
               x-amazon-apigateway-integration:
                 type: aws
                 httpMethod: POST
                 uri:
-                  ##### Change "userCreateFunction" to the actual function name.
                   Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${logoutFunction.Arn}/invocations
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
@@ -162,6 +160,7 @@ Resources:
           #
           /followees/list:
             post:
+              description: "Get a list of users that the specified user is following."
               consumes: *commonConsumes
               produces: *commonProduces
               x-amazon-apigateway-integration:
@@ -175,6 +174,7 @@ Resources:
 
           /followers/list:
             post:
+              description: "Get a list of users who follow the specified user."
               consumes: *commonConsumes
               produces: *commonProduces
               x-amazon-apigateway-integration:
@@ -188,6 +188,7 @@ Resources:
 
           /followers/status:
             post:
+              description: "Check whether one user follows another user."
               consumes: *commonConsumes
               produces: *commonProduces
               x-amazon-apigateway-integration:
@@ -201,6 +202,7 @@ Resources:
 
           /followees/count:
             post:
+              description: "Retrieve the total number of followees of a specified user."
               consumes: *commonConsumes
               produces: *commonProduces
               x-amazon-apigateway-integration:
@@ -214,6 +216,7 @@ Resources:
 
           /followers/count:
             post:
+              description: "Retrieve the total number of followers of a specified user."
               consumes: *commonConsumes
               produces: *commonProduces
               x-amazon-apigateway-integration:
@@ -227,6 +230,7 @@ Resources:
 
           /follow:
             post:
+              description: "Make one user follow another user."
               consumes: *commonConsumes
               produces: *commonProduces
               x-amazon-apigateway-integration:
@@ -240,6 +244,7 @@ Resources:
 
           /unfollow:
             post:
+              description: "Make one user unfollow another user."
               consumes: *commonConsumes
               produces: *commonProduces
               x-amazon-apigateway-integration:
@@ -256,6 +261,7 @@ Resources:
           #
           /story/list:
             post:
+              description: "Retrieve status list of the specified user's story."
               consumes: *commonConsumes
               produces: *commonProduces
               x-amazon-apigateway-integration:
@@ -269,6 +275,7 @@ Resources:
 
           /feed/list:
             post:
+              description: "Retrieve status list of the specified user's feed."
               consumes: *commonConsumes
               produces: *commonProduces
               x-amazon-apigateway-integration:
@@ -282,6 +289,7 @@ Resources:
 
           /status/post:
             post:
+              description: "Post a new status to the user’s story and distribute it to followers’ feeds."
               consumes: *commonConsumes
               produces: *commonProduces
               x-amazon-apigateway-integration:
@@ -292,6 +300,7 @@ Resources:
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
+
 
   #
   # Web API Lambda functions
@@ -304,7 +313,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: getUserFunction
-      ##### Modify Handler property to match your code.
       Handler: handlers/UserServiceHandlers.getUserHandler
       Policies: *commonPolicies
       Events:
@@ -319,7 +327,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: loginFunction
-      ##### Modify Handler property to match your code.
       Handler: handlers/UserServiceHandlers.loginHandler
       Policies: *commonPolicies
       Events:
@@ -334,7 +341,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: registerFunction
-      ##### Modify Handler property to match your code.
       Handler: handlers/UserServiceHandlers.registerHandler
       Policies: *commonPolicies
       Events:
@@ -349,7 +355,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: logoutFunction
-      ##### Modify Handler property to match your code.
       Handler: handlers/UserServiceHandlers.logoutHandler
       Policies: *commonPolicies
       Events:
@@ -367,7 +372,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: getFolloweesFunction
-      ##### Modify Handler property to match your code.
       Handler: handlers/FollowServiceHandlers.getFolloweesHandler
       Policies: *commonPolicies
       Events:
@@ -382,7 +386,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: getFollowersFunction
-      ##### Modify Handler property to match your code.
       Handler: handlers/FollowServiceHandlers.getFollowersHandler
       Policies: *commonPolicies
       Events:
@@ -397,7 +400,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: getIsFollowerStatusFunction
-      ##### Modify Handler property to match your code.
       Handler: handlers/FollowServiceHandlers.getIsFollowerStatusHandler
       Policies: *commonPolicies
       Events:
@@ -412,7 +414,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: getFolloweeCountFunction
-      ##### Modify Handler property to match your code.
       Handler: handlers/FollowServiceHandlers.getFolloweeCountHandler
       Policies: *commonPolicies
       Events:
@@ -427,7 +428,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: getFollowerCountFunction
-      ##### Modify Handler property to match your code.
       Handler: handlers/FollowServiceHandlers.getFollowerCountHandler
       Policies: *commonPolicies
       Events:
@@ -442,7 +442,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: followFunction
-      ##### Modify Handler property to match your code.
       Handler: handlers/FollowServiceHandlers.followHandler
       Policies: *commonPolicies
       Events:
@@ -457,7 +456,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: unfollowFunction
-      ##### Modify Handler property to match your code.
       Handler: handlers/FollowServiceHandlers.unfollowHandler
       Policies: *commonPolicies
       Events:
@@ -475,7 +473,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: getStoryItemsFunction
-      ##### Modify Handler property to match your code.
       Handler: handlers/StatusServiceHandlers.getStoryItemsHandler
       Policies: *commonPolicies
       Events:
@@ -490,7 +487,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: getFeedItemsFunction
-      ##### Modify Handler property to match your code.
       Handler: handlers/StatusServiceHandlers.getFeedItemsHandler
       Policies: *commonPolicies
       Events:
@@ -505,7 +501,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: postStatusFunction
-      ##### Modify Handler property to match your code.
       Handler: handlers/StatusServiceHandlers.postStatusHandler
       Policies: *commonPolicies
       Events:

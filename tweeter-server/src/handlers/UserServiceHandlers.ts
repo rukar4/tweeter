@@ -7,10 +7,12 @@ import {
   AuthenticatedRequest
 } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
+import { authenticate } from "../util";
 
 const userService = new UserService()
 
 export async function getUserHandler(req: GetUserRequest): Promise<GetUserResponse> {
+  await authenticate(req)
   const user = await userService.getUser(req.token, req.alias)
 
   return {
@@ -21,6 +23,9 @@ export async function getUserHandler(req: GetUserRequest): Promise<GetUserRespon
 }
 
 export async function loginHandler(req: LoginRequest): Promise<LoginResponse> {
+  if (!req.alias || !req.password)
+    throw new Error("bad request: expected alias and password")
+
   const [user, token] = await userService.login(req.alias, req.password)
 
   return {
@@ -32,6 +37,9 @@ export async function loginHandler(req: LoginRequest): Promise<LoginResponse> {
 }
 
 export async function registerHandler(req: RegisterRequest): Promise<LoginResponse> {
+  if (!req.firstName || !req.lastName || !req.alias || !req.password || !req.imageStringBase64 || !req.imageFileExtension)
+    throw new Error("bad request: missing required request parameters to register user")
+
   const [user, token] = await userService
     .register
     (
