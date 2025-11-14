@@ -1,6 +1,6 @@
 import "./UserInfoComponent.css";
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo, useUserInfoActions } from "./UserHooks";
 import { UserInfoPresenter, UserInfoView } from "../../presenter/userPresenters/UserInfoPresenter";

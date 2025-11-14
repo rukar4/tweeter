@@ -7,9 +7,9 @@ import {
   UpdateFollowingResponse,
   UserDto,
   UserRequest
-} from "tweeter-shared";
-import { FollowService } from "../model/service/FollowService";
-import { authenticate, getList } from "../util";
+} from "tweeter-shared"
+import { FollowService } from "../model/service/FollowService"
+import { authenticate, getList } from "../util"
 
 const followService = new FollowService()
 

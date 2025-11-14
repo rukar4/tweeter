@@ -1,4 +1,4 @@
-import { PagedItemRequest, StatusDto, PostStatusRequest, TweeterResponse } from "tweeter-shared";
+import { PagedItemRequest, PostStatusRequest, StatusDto, TweeterResponse } from "tweeter-shared";
 import { authenticate, getList } from "../util";
 import { StatusService } from "../model/service/StatusService";
 

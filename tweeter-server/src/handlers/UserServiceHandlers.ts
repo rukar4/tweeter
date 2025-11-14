@@ -1,10 +1,10 @@
 import {
+  AuthenticatedRequest,
   GetUserRequest,
   GetUserResponse,
   LoginRequest,
   LoginResponse,
-  RegisterRequest,
-  AuthenticatedRequest
+  RegisterRequest
 } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 import { authenticate } from "../util";

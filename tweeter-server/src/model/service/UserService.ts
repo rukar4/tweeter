@@ -1,5 +1,4 @@
 import { AuthTokenDto, FakeData, UserDto } from "tweeter-shared"
-import { Buffer } from "buffer"
 
 export class UserService {
   public async getUser(

@@ -1,11 +1,4 @@
-import {
-  AuthenticatedRequest,
-  PagedItemRequest,
-  PagedItemResponse,
-  StatusDto,
-  TweeterRequest,
-  UserDto
-} from "tweeter-shared";
+import { AuthenticatedRequest, PagedItemRequest, PagedItemResponse, StatusDto, UserDto } from "tweeter-shared";
 
 export async function getList<T extends UserDto | StatusDto>(
   req: PagedItemRequest<T>,

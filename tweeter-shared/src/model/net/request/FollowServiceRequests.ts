@@ -1,4 +1,4 @@
-import { AuthenticatedRequest, TweeterRequest } from "./TweeterRequests";
+import { AuthenticatedRequest } from "./TweeterRequests";
 import { UserDto } from "../../dto/UserDto";
 
 export interface UserRequest extends AuthenticatedRequest {

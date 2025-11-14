@@ -1,5 +1,5 @@
 import { LogoutPresenter, LogoutView } from "../../../../src/presenter/authPresenters/LogoutPresenter";
-import { anything, capture, instance, mock, spy, verify, when } from "@typestrong/ts-mockito";
+import { anything, instance, mock, spy, verify, when } from "@typestrong/ts-mockito";
 import { AuthToken } from "tweeter-shared";
 import { UserService } from "../../../../src/model.service/UserService";
 
