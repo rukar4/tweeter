@@ -1,12 +1,20 @@
 import { FakeData, User, UserDto } from "tweeter-shared"
+import { FollowDaoInterface } from "../../dao/FollowDaoInterface";
 
 export class FollowService {
+  constructor(private FollowDao: FollowDaoInterface) {
+  }
+
   public async loadMoreFollowees(
     token: string,
     userAlias: string,
     pageSize: number,
     lastItem: UserDto | null
   ): Promise<[UserDto[], boolean]> {
+    const items = await this.FollowDao.getPageFollowees(userAlias, pageSize, lastItem.alias)
+
+    //TODO: Convert items.values to UserDto[]
+
     return this.getFakeData(lastItem, pageSize, userAlias);
   }
 
@@ -31,7 +39,13 @@ export class FollowService {
     user: UserDto,
     selectedUser: UserDto
   ): Promise<boolean> {
-    return FakeData.instance.isFollower()
+    const relation = await this.FollowDao.retrieveItem(
+      {
+        follower_alias: user.alias,
+        followee_alias: selectedUser.alias
+      }
+    )
+    return !!relation
   }
 
   public async getFolloweeCount(
