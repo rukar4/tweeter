@@ -1,12 +1,17 @@
 import { AuthTokenDto, FakeData, UserDto } from "tweeter-shared"
+import { DynamoDbDao } from "../../dao/DynamoDbDao";
+import { ImageDaoInterface } from "../../dao/DaoInterfaces";
 
 export class UserService {
+  // TODO: Create DAO factory
+  constructor(private userDao: DynamoDbDao<UserDto, { alias: string }>, private imageDao: ImageDaoInterface) {
+  }
+
   public async getUser(
     token: string,
     alias: string
   ): Promise<UserDto | null> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.findUserByAlias(alias).dto
+    return this.userDao.retrieveItem({ alias })
   }
 
   public async login(
@@ -17,7 +22,7 @@ export class UserService {
     const user = FakeData.instance.firstUser
 
     if (user === null) {
-      throw new Error("Invalid alias or password")
+      throw new Error("unauthorized: Invalid alias or password")
     }
 
     return [user.dto, FakeData.instance.authToken.dto]
@@ -31,13 +36,20 @@ export class UserService {
     imageStringBase64: string,
     imageFileExtension: string
   ): Promise<[UserDto, AuthTokenDto]> {
-    const user = FakeData.instance.firstUser
+    const fileName = `${ alias }.${ imageFileExtension }`
+    await this.imageDao.createImage(imageStringBase64, fileName)
+    const imageUrl = await this.imageDao.getImageUrl(fileName)
 
-    if (user === null) {
-      throw new Error("Invalid registration")
-    }
+    await this.userDao.createItem({
+      alias,
+      firstName,
+      lastName,
+      imageUrl
+    })
 
-    return [user.dto, FakeData.instance.authToken.dto]
+    const user = await this.userDao.retrieveItem({ alias })
+
+    return [user, FakeData.instance.authToken.dto]
   }
 
   public async logout(token: string): Promise<void> {

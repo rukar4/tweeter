@@ -8,8 +8,10 @@ import {
 } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 import { authenticate } from "../util";
+import { UserDao } from "../dao/UserDao";
+import { S3ImageDao } from "../dao/S3ImageDao";
 
-const userService = new UserService()
+const userService = new UserService(new UserDao(), new S3ImageDao())
 
 export async function getUserHandler(req: GetUserRequest): Promise<GetUserResponse> {
   await authenticate(req)
@@ -38,7 +40,7 @@ export async function loginHandler(req: LoginRequest): Promise<LoginResponse> {
 
 export async function registerHandler(req: RegisterRequest): Promise<LoginResponse> {
   if (!req.firstName || !req.lastName || !req.alias || !req.password || !req.imageStringBase64 || !req.imageFileExtension)
-    throw new Error("bad request: missing required request parameters to register user")
+    throw new Error("bad-request: missing required request parameters to register user")
 
   const [user, token] = await userService
     .register

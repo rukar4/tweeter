@@ -1,5 +1,5 @@
 import { FakeData, User, UserDto } from "tweeter-shared"
-import { FollowDaoInterface } from "../../dao/FollowDaoInterface";
+import { FollowDaoInterface } from "../../dao/DaoInterfaces";
 
 export class FollowService {
   constructor(private FollowDao: FollowDaoInterface) {

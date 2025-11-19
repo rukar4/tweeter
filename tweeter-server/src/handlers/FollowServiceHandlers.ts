@@ -10,8 +10,9 @@ import {
 } from "tweeter-shared"
 import { FollowService } from "../model/service/FollowService"
 import { authenticate, getList } from "../util"
+import FollowDao from "../dao/FollowDao";
 
-const followService = new FollowService()
+const followService = new FollowService(new FollowDao())
 
 interface PagedUserItemRequest extends PagedItemRequest<UserDto> {}
 interface PagedUserItemResponse extends PagedItemResponse<UserDto> {}

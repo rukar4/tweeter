@@ -9,7 +9,7 @@ import {
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DataPage } from "../entity/DataPage";
 import FollowItem, { FollowItemKey } from "../entity/FollowItem";
-import { FollowDaoInterface } from "./FollowDaoInterface";
+import { FollowDaoInterface } from "./DaoInterfaces";
 
 export default class FollowDao implements FollowDaoInterface {
   readonly tableName = 'follow'
