@@ -7,14 +7,13 @@ import {
   RegisterRequest
 } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
-import { authenticate } from "../util";
+import { withAuth } from "../util";
 import { UserDao } from "../dao/UserDao";
 import { S3ImageDao } from "../dao/S3ImageDao";
 
 const userService = new UserService(new UserDao(), new S3ImageDao())
 
-export async function getUserHandler(req: GetUserRequest): Promise<GetUserResponse> {
-  await authenticate(req)
+export const getUserHandler = withAuth(async (req: GetUserRequest): Promise<GetUserResponse> => {
   const user = await userService.getUser(req.token, req.alias)
 
   return {
@@ -22,7 +21,7 @@ export async function getUserHandler(req: GetUserRequest): Promise<GetUserRespon
     message: null,
     user
   }
-}
+})
 
 export async function loginHandler(req: LoginRequest): Promise<LoginResponse> {
   if (!req.alias || !req.password)

@@ -1,10 +1,11 @@
 import { AuthTokenDto, FakeData, UserDto } from "tweeter-shared"
-import { DynamoDbDao } from "../../dao/DynamoDbDao";
-import { ImageDaoInterface } from "../../dao/DaoInterfaces";
+import { DbDaoInterface, ImageDaoInterface } from "../../dao/DaoInterfaces";
+import bcrypt from "bcryptjs";
+import { UserDbItem } from "../../entity/UserDbItem";
 
 export class UserService {
   // TODO: Create DAO factory
-  constructor(private userDao: DynamoDbDao<UserDto, { alias: string }>, private imageDao: ImageDaoInterface) {
+  constructor(private userDao: DbDaoInterface<UserDbItem, { alias: string }>, private imageDao: ImageDaoInterface) {
   }
 
   public async getUser(
@@ -18,14 +19,25 @@ export class UserService {
     alias: string,
     password: string
   ): Promise<[UserDto, AuthTokenDto]> {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser
+    const user = await this.userDao.retrieveItem({ alias })
 
     if (user === null) {
       throw new Error("unauthorized: Invalid alias or password")
     }
 
-    return [user.dto, FakeData.instance.authToken.dto]
+    const { firstName, lastName, imageUrl, passwordHash } = user
+
+    const isValid = await bcrypt.compare(password, passwordHash)
+
+    if (!isValid) {
+      throw new Error("unauthorized: Invalid alias or password")
+    }
+
+    // TODO: Create auth token
+    return [
+      { alias, firstName, lastName, imageUrl },
+      FakeData.instance.authToken.dto
+    ]
   }
 
   public async register(
@@ -38,22 +50,29 @@ export class UserService {
   ): Promise<[UserDto, AuthTokenDto]> {
     const fileName = `${ alias }.${ imageFileExtension }`
     await this.imageDao.createImage(imageStringBase64, fileName)
-    const imageUrl = await this.imageDao.getImageUrl(fileName)
+    const imageUrl = this.imageDao.getImageUrl(fileName)
 
-    await this.userDao.createItem({
-      alias,
-      firstName,
-      lastName,
-      imageUrl
-    })
+    const userDto: UserDto = { alias, firstName, lastName, imageUrl }
 
-    const user = await this.userDao.retrieveItem({ alias })
+    await this.userDao.createItem(
+      {
+        ...userDto,
+        passwordHash: await this.hashPassword(password)
+      }
+    )
 
-    return [user, FakeData.instance.authToken.dto]
+    //TODO: Create auth token
+
+    return [userDto, FakeData.instance.authToken.dto]
   }
 
   public async logout(token: string): Promise<void> {
     // Pause so we can see the logging out message. Delete when the call to the server is implemented.
     await new Promise((res) => setTimeout(res, 1000))
+  }
+
+  private async hashPassword(password: string) {
+    const salt = bcrypt.genSaltSync(10)
+    return bcrypt.hashSync(password, salt)
   }
 }

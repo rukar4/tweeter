@@ -1,25 +1,24 @@
-import { PagedItemRequest, PostStatusRequest, StatusDto, TweeterResponse } from "tweeter-shared";
-import { authenticate, getList } from "../util";
-import { StatusService } from "../model/service/StatusService";
+import { PagedItemRequest, PostStatusRequest, StatusDto, TweeterResponse } from "tweeter-shared"
+import { getList, withAuth } from "../util"
+import { StatusService } from "../model/service/StatusService"
 
 interface PagedStatusItemRequest extends PagedItemRequest<StatusDto> {}
 
 const statusService = new StatusService()
 
-export async function getStoryItemsHandler(req: PagedStatusItemRequest) {
+export const getStoryItemsHandler = withAuth(async (req: PagedStatusItemRequest) => {
   return getList(req, statusService.loadMoreStoryItems.bind(statusService))
-}
+})
 
-export async function getFeedItemsHandler(req: PagedStatusItemRequest) {
+export const getFeedItemsHandler = withAuth(async (req: PagedStatusItemRequest) => {
   return getList(req, statusService.loadMoreFeedItems.bind(statusService))
-}
+})
 
-export async function postStatusHandler(req: PostStatusRequest): Promise<TweeterResponse> {
-  await authenticate(req)
+export const postStatusHandler = withAuth(async (req: PostStatusRequest): Promise<TweeterResponse> => {
   await statusService.postStatus(req.token, req.newStatus)
 
   return {
     success: true,
     message: null
   }
-}
+})

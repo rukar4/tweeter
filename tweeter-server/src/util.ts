@@ -9,7 +9,6 @@ export async function getList<T extends UserDto | StatusDto>(
     lastItem: T | null
   ) => Promise<[T[], boolean]>
 ): Promise<PagedItemResponse<T>> {
-  await authenticate(req)
   const [items, hasMore] = await serviceCall(req.token, req.userAlias, req.pageSize, req.lastItem)
 
   return {
@@ -20,8 +19,15 @@ export async function getList<T extends UserDto | StatusDto>(
   }
 }
 
-export async function authenticate<T extends AuthenticatedRequest>(req: T) {
-  // TODO: Check if token is valid
-  if (!req.token)
-    throw new Error("unauthorized: invalid auth token provided")
+export function withAuth<TReq extends AuthenticatedRequest, TRes>(
+  handler: (req: TReq) => Promise<TRes>
+) {
+  return async (req: TReq): Promise<TRes> => {
+    if (!req.token)
+      throw new Error("unauthorized: invalid auth token provided")
+
+    // TODO: Check if token is valid
+
+    return handler(req)
+  }
 }
